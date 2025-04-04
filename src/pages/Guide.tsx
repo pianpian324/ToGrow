@@ -1,11 +1,10 @@
-
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PlantingGuide from "@/components/PlantingGuide";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
-  Search, Leaf, Plant, Sprout, Sun, Thermometer, Droplet, 
+  Search, Leaf, Sprout, Sun, Thermometer, Droplet, 
   CalendarDays, AlertTriangle, BookOpen 
 } from "lucide-react";
 
@@ -121,7 +120,7 @@ const Guide = () => {
             <Tabs defaultValue="popular">
               <TabsList className="mb-6">
                 <TabsTrigger value="popular" className="data-[state=active]:bg-greencity-primary data-[state=active]:text-white">
-                  <Plant className="h-4 w-4 mr-2" />
+                  <Sprout className="h-4 w-4 mr-2" />
                   热门植物
                 </TabsTrigger>
                 <TabsTrigger value="seasonal" className="data-[state=active]:bg-greencity-primary data-[state=active]:text-white">

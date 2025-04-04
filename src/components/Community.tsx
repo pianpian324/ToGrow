@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,10 +7,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { 
   Users, MapPin, Heart, MessageCircle, Share2, Search, 
-  Award, ThumbsUp, Filter, Clock, Leaf, Plant
+  Award, ThumbsUp, Filter, Clock, Leaf, Sprout
 } from "lucide-react";
 
-// Mock community posts - would come from an API in a real app
 const mockPosts = [
   {
     id: 1,
@@ -66,7 +64,6 @@ const mockPosts = [
   }
 ];
 
-// Format time relative to now
 const formatRelativeTime = (dateString: string) => {
   const date = new Date(dateString);
   const now = new Date();
@@ -91,13 +88,11 @@ const Community = () => {
   const handleLike = (postId: number) => {
     const isLiked = liked[postId];
     
-    // Update liked state
     setLiked({
       ...liked,
       [postId]: !isLiked
     });
     
-    // Update post likes count
     setPosts(posts.map(post => {
       if (post.id === postId) {
         return {
@@ -185,7 +180,7 @@ const Community = () => {
                       
                       <div className="flex flex-wrap gap-2 my-1">
                         <div className="text-xs bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-full flex items-center">
-                          <Plant className="h-3 w-3 mr-1" />
+                          <Sprout className="h-3 w-3 mr-1" />
                           {post.plantType}
                         </div>
                         <div className="text-xs bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-full flex items-center">
