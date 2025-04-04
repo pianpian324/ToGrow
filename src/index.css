@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -13,16 +14,16 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 142 37% 49%;
+    --primary-foreground: 0 0% 98%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 142 26% 36%;
+    --secondary-foreground: 0 0% 98%;
 
-    --muted: 210 40% 96.1%;
+    --muted: 120 16% 96%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 210 40% 96.1%;
+    --accent: 142 38% 74%;
     --accent-foreground: 222.2 47.4% 11.2%;
 
     --destructive: 0 84.2% 60.2%;
@@ -30,55 +31,49 @@
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --ring: 142 37% 49%;
 
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 122 24% 12%;
+    --foreground: 142 38% 95%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 122 24% 12%;
+    --card-foreground: 142 38% 95%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 122 24% 12%;
+    --popover-foreground: 142 38% 95%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 142 70% 55%;
+    --primary-foreground: 0 0% 0%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 142 40% 35%;
+    --secondary-foreground: 0 0% 98%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 122 24% 20%;
+    --muted-foreground: 142 38% 70%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 142 50% 25%;
+    --accent-foreground: 142 38% 95%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --border: 122 24% 20%;
+    --input: 122 24% 20%;
+    --ring: 142 76.3% 48%;
+    
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -97,5 +92,41 @@
 
   body {
     @apply bg-background text-foreground;
+    font-family: 'Noto Sans', 'Noto Sans SC', sans-serif;
   }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold text-greencity-primary;
+  }
+}
+
+@layer components {
+  .plant-card {
+    @apply bg-white dark:bg-greencity-dark/30 rounded-lg p-4 shadow-md border border-greencity-light/50 hover:shadow-lg transition-all duration-300 overflow-hidden;
+  }
+  
+  .weather-card {
+    @apply bg-gradient-to-br from-greencity-sky/80 to-greencity-sky/50 dark:from-greencity-sky/30 dark:to-greencity-sky/10 rounded-lg p-4 shadow-md border border-greencity-sky/20 overflow-hidden;
+  }
+
+  .earth-card {
+    @apply bg-gradient-to-br from-greencity-earth/20 to-greencity-earth/10 dark:from-greencity-earth/30 dark:to-greencity-earth/10 rounded-lg p-4 shadow-md border border-greencity-earth/20 overflow-hidden;
+  }
+
+  .diary-card {
+    @apply bg-white dark:bg-greencity-dark/20 rounded-lg p-4 shadow-md border-l-4 border-greencity-primary border overflow-hidden;
+  }
+  
+  .community-post {
+    @apply bg-white dark:bg-greencity-dark/20 rounded-lg p-4 shadow-md border border-greencity-light/50 hover:border-greencity-primary/50 transition-colors duration-300 overflow-hidden;
+  }
+}
+
+.fancy-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.leaf-bullet li::before {
+  content: "🌱";
+  margin-right: 0.5rem;
 }

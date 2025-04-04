@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,16 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// GreenCity custom colors
+				greencity: {
+					primary: '#4CAF50',    // fresh leaf green
+					dark: '#2E7D32',       // forest green
+					light: '#A5D6A7',      // soft mint
+					earth: '#795548',      // soil brown
+					sky: '#81D4FA',        // clear sky
+					sun: '#FFC107',        // warm sun
+					cloud: '#F5F5F5',      // light background
 				}
 			},
 			borderRadius: {
@@ -84,11 +95,21 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'growing-plant': {
+					'0%': { transform: 'scaleY(0)', transformOrigin: 'bottom' },
+					'100%': { transform: 'scaleY(1)', transformOrigin: 'bottom' }
+				},
+				'fade-in': {
+					'0%': { opacity: '0' },
+					'100%': { opacity: '1' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'growing-plant': 'growing-plant 2s ease-out',
+				'fade-in': 'fade-in 1s ease-out'
 			}
 		}
 	},
