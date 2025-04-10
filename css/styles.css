@@ -1,0 +1,114 @@
+/* 地球公转动画 */
+.earth-orbit {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    margin: 20px auto;
+}
+
+.sun {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background: radial-gradient(circle at 30% 30%, #fff, #ff0);
+    border-radius: 50%;
+    top: 120px;
+    left: 120px;
+    box-shadow: 0 0 50px #ff0;
+}
+
+.earth {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background: radial-gradient(circle at 30% 30%, #1da1f2, #0c4a6e);
+    border-radius: 50%;
+    top: 135px;
+    left: 135px;
+    transform-origin: -100px 15px;
+    animation: orbit 20s linear infinite;
+}
+
+@keyframes orbit {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.season-indicator {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: #ff4757;
+    border-radius: 50%;
+    top: 150px;
+    left: 150px;
+}
+
+/* 卡片动画 */
+.card-hover {
+    transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+/* 标签页切换动画 */
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+    animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* 植物卡片 */
+.plant-card {
+    transition: all 0.3s ease;
+}
+
+.plant-card:hover {
+    transform: scale(1.02);
+}
+
+/* 日记条目 */
+.diary-entry {
+    position: relative;
+}
+
+.diary-entry::before {
+    content: '';
+    position: absolute;
+    left: 20px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background-color: #e5e7eb;
+}
+
+/* 地图容器 */
+.map-container {
+    height: 500px;
+    background-color: #f0f4f8;
+    position: relative;
+    overflow: hidden;
+}
+
+.farm-plot {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    background-color: #84cc16;
+    border: 2px solid #4d7c0f;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

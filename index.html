@@ -4,109 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>城市农园 - 都市种植指南</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        .earth-orbit {
-            position: relative;
-            width: 300px;
-            height: 300px;
-            margin: 20px auto;
-        }
-        .sun {
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            background: radial-gradient(circle at 30% 30%, #fff, #ff0);
-            border-radius: 50%;
-            top: 120px;
-            left: 120px;
-            box-shadow: 0 0 50px #ff0;
-        }
-        .earth {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            background: radial-gradient(circle at 30% 30%, #1da1f2, #0c4a6e);
-            border-radius: 50%;
-            top: 135px;
-            left: 135px;
-            transform-origin: -100px 15px;
-            animation: orbit 20s linear infinite;
-        }
-        @keyframes orbit {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        .season-indicator {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background-color: #ff4757;
-            border-radius: 50%;
-            top: 150px;
-            left: 150px;
-        }
-        .card-hover {
-            transition: all 0.3s ease;
-        }
-        .card-hover:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
-            animation: fadeIn 0.5s;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        .plant-card {
-            transition: all 0.3s ease;
-        }
-        .plant-card:hover {
-            transform: scale(1.02);
-        }
-        .diary-entry {
-            position: relative;
-        }
-        .diary-entry::before {
-            content: '';
-            position: absolute;
-            left: 20px;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background-color: #e5e7eb;
-        }
-        .map-container {
-            height: 500px;
-            background-color: #f0f4f8;
-            position: relative;
-            overflow: hidden;
-        }
-        .farm-plot {
-            position: absolute;
-            width: 80px;
-            height: 80px;
-            background-color: #84cc16;
-            border: 2px solid #4d7c0f;
-            border-radius: 8px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .farm-plot:hover {
-            transform: scale(1.1);
-            z-index: 10;
-        }
-    </style>
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Firebase SDK -->
+    <script type="module" src="https://www.gstatic.com/firebasejs/9.x.x/firebase-app.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/9.x.x/firebase-auth.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/9.x.x/firebase-firestore.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/9.x.x/firebase-storage.js"></script>
 </head>
 <body class="bg-gray-50 font-sans">
     <!-- Header -->
@@ -116,14 +21,16 @@
                 <i class="fas fa-leaf text-2xl"></i>
                 <h1 class="text-2xl font-bold">城市农园</h1>
             </div>
-            <div class="flex items-center space-x-4">
-                <button id="location-btn" class="flex items-center space-x-1 bg-green-700 hover:bg-green-800 px-3 py-1 rounded-full">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <span>北京市</span>
-                </button>
-                <button class="bg-green-700 hover:bg-green-800 px-3 py-1 rounded-full">
-                    <i class="fas fa-user"></i>
-                </button>
+            <!-- 用户认证按钮 -->
+            <div class="flex items-center space-x-4" id="auth-buttons">
+                <button id="login-btn" class="bg-white text-green-600 px-4 py-2 rounded-lg hover:bg-green-50 transition-colors duration-300">登录</button>
+                <button id="register-btn" class="bg-green-700 text-white px-4 py-2 rounded-lg hover:bg-green-800 transition-colors duration-300">注册</button>
+            </div>
+            <!-- 用户信息 -->
+            <div class="hidden items-center space-x-4" id="user-info">
+                <img id="user-avatar" src="https://via.placeholder.com/32" alt="用户头像" class="w-8 h-8 rounded-full">
+                <span id="user-name" class="text-white">用户名</span>
+                <button id="logout-btn" class="text-white hover:text-green-200">退出</button>
             </div>
         </div>
     </header>
@@ -567,107 +474,7 @@
                         </div>
                     </div>
                     
-                    <div class="space-y-6">
-                        <!-- Diary Entry 1 -->
-                        <div class="diary-entry bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                            <div class="flex justify-between items-start mb-4">
-                                <div>
-                                    <h3 class="font-bold text-lg text-gray-800">阳台番茄成长记录</h3>
-                                    <p class="text-sm text-gray-500">2023年5月15日 - 进行中</p>
-                                </div>
-                                <span class="px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full">健康</span>
-                            </div>
-                            
-                            <div class="flex flex-wrap gap-4 mb-4">
-                                <div class="flex items-center">
-                                    <i class="fas fa-thermometer-half text-gray-500 mr-2"></i>
-                                    <span>25°C</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <i class="fas fa-tint text-gray-500 mr-2"></i>
-                                    <span>土壤湿度: 适中</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <i class="fas fa-ruler-combined text-gray-500 mr-2"></i>
-                                    <span>高度: 35cm</span>
-                                </div>
-                            </div>
-                            
-                            <div class="mb-4">
-                                <p class="text-gray-700">今天发现第一朵花开了！非常开心。按照指南进行了疏花，保留了最健壮的花序。施用了少量番茄专用肥，期待结果。</p>
-                            </div>
-                            
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-                                <img src="https://via.placeholder.com/150" alt="番茄照片" class="w-full h-24 object-cover rounded-lg">
-                                <img src="https://via.placeholder.com/150" alt="番茄照片" class="w-full h-24 object-cover rounded-lg">
-                                <img src="https://via.placeholder.com/150" alt="番茄照片" class="w-full h-24 object-cover rounded-lg">
-                                <img src="https://via.placeholder.com/150" alt="番茄照片" class="w-full h-24 object-cover rounded-lg">
-                            </div>
-                            
-                            <div class="flex justify-between items-center">
-                                <div class="flex space-x-2">
-                                    <button class="text-gray-500 hover:text-green-600">
-                                        <i class="far fa-edit"></i>
-                                    </button>
-                                    <button class="text-gray-500 hover:text-red-600">
-                                        <i class="far fa-trash-alt"></i>
-                                    </button>
-                                </div>
-                                <button class="text-sm text-green-600 hover:text-green-800 font-medium">
-                                    查看完整记录 <i class="fas fa-chevron-right ml-1"></i>
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <!-- Diary Entry 2 -->
-                        <div class="diary-entry bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                            <div class="flex justify-between items-start mb-4">
-                                <div>
-                                    <h3 class="font-bold text-lg text-gray-800">罗勒水培实验</h3>
-                                    <p class="text-sm text-gray-500">2023年4月20日 - 已完成</p>
-                                </div>
-                                <span class="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">成功</span>
-                            </div>
-                            
-                            <div class="flex flex-wrap gap-4 mb-4">
-                                <div class="flex items-center">
-                                    <i class="fas fa-thermometer-half text-gray-500 mr-2"></i>
-                                    <span>22°C</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <i class="fas fa-flask text-gray-500 mr-2"></i>
-                                    <span>水培营养液</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <i class="fas fa-ruler-combined text-gray-500 mr-2"></i>
-                                    <span>高度: 25cm</span>
-                                </div>
-                            </div>
-                            
-                            <div class="mb-4">
-                                <p class="text-gray-700">经过45天的水培，罗勒生长状况良好，叶片肥大芳香浓郁。今天进行了第一次采收，剪取了顶端嫩叶用于制作青酱。水培相比土培生长速度更快，但香气略淡。</p>
-                            </div>
-                            
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-                                <img src="https://via.placeholder.com/150" alt="罗勒照片" class="w-full h-24 object-cover rounded-lg">
-                                <img src="https://via.placeholder.com/150" alt="罗勒照片" class="w-full h-24 object-cover rounded-lg">
-                            </div>
-                            
-                            <div class="flex justify-between items-center">
-                                <div class="flex space-x-2">
-                                    <button class="text-gray-500 hover:text-green-600">
-                                        <i class="far fa-edit"></i>
-                                    </button>
-                                    <button class="text-gray-500 hover:text-red-600">
-                                        <i class="far fa-trash-alt"></i>
-                                    </button>
-                                </div>
-                                <button class="text-sm text-green-600 hover:text-green-800 font-medium">
-                                    查看完整记录 <i class="fas fa-chevron-right ml-1"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                    <div id="diary-container" class="space-y-6"></div>
                 </div>
             </div>
         </div>
@@ -1016,11 +823,77 @@
                 </div>
             </div>
             <div class="border-t border-gray-700 mt-8 pt-6 text-sm text-gray-400 text-center">
-                <p>© 2023 城市农园. 保留所有权利.</p>
+                <p> 2023 城市农园. 保留所有权利.</p>
             </div>
         </div>
     </footer>
 
+    <!-- 登录模态框 -->
+    <div id="login-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
+        <div class="bg-white rounded-xl p-6 w-96">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">登录</h2>
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">邮箱</label>
+                    <input type="email" id="login-email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">密码</label>
+                    <input type="password" id="login-password" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" class="cancel-modal px-4 py-2 text-gray-600 hover:text-gray-800">取消</button>
+                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">登录</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 注册模态框 -->
+    <div id="register-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
+        <div class="bg-white rounded-xl p-6 w-96">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">注册</h2>
+            <form id="register-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">用户名</label>
+                    <input type="text" id="register-name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">邮箱</label>
+                    <input type="email" id="register-email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">密码</label>
+                    <input type="password" id="register-password" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" class="cancel-modal px-4 py-2 text-gray-600 hover:text-gray-800">取消</button>
+                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">注册</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase 初始化 -->
+    <script>
+        // Firebase 配置
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // 初始化 Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+    </script>
+
+    <!-- 页面功能脚本 -->
     <script>
         // Tab switching functionality
         document.querySelectorAll('.tab-btn').forEach(button => {
@@ -1075,5 +948,580 @@
             alert(`位置已更新为 ${randomCity}，天气和种植建议将相应调整。`);
         });
     </script>
-<p style="border-radius: 8px; text-align: center; font-size: 12px; color: #fff; margin-top: 16px;position: fixed; left: 8px; bottom: 8px; z-index: 10; background: rgba(0, 0, 0, 0.8); padding: 4px 8px;">Made with <img src="https://enzostvs-deepsite.hf.space/logo.svg" alt="DeepSite Logo" style="width: 16px; height: 16px; vertical-align: middle;display:inline-block;margin-right:3px;filter:brightness(0) invert(1);"><a href="https://enzostvs-deepsite.hf.space" style="color: #fff;text-decoration: underline;" target="_blank" >DeepSite</a> - 🧬 <a href="https://enzostvs-deepsite.hf.space?remix=pianpian324/togrow" style="color: #fff;text-decoration: underline;" target="_blank" >Remix</a></p></body>
+
+    <!-- 用户认证功能 -->
+    <script>
+        // 登录模态框
+        const loginModal = document.getElementById('login-modal');
+        const registerModal = document.getElementById('register-modal');
+        const loginBtn = document.getElementById('login-btn');
+        const registerBtn = document.getElementById('register-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const authButtons = document.getElementById('auth-buttons');
+        const userInfo = document.getElementById('user-info');
+        const userName = document.getElementById('user-name');
+
+        // 显示/隐藏模态框
+        loginBtn.addEventListener('click', () => {
+            loginModal.style.display = 'flex';
+        });
+
+        registerBtn.addEventListener('click', () => {
+            registerModal.style.display = 'flex';
+        });
+
+        document.querySelectorAll('.cancel-modal').forEach(button => {
+            button.addEventListener('click', () => {
+                loginModal.style.display = 'none';
+                registerModal.style.display = 'none';
+            });
+        });
+
+        // 登录表单提交
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+                loginModal.style.display = 'none';
+            } catch (error) {
+                alert('登录失败：' + error.message);
+            }
+        });
+
+        // 注册表单提交
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+
+            try {
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                await userCredential.user.updateProfile({
+                    displayName: name
+                });
+                registerModal.style.display = 'none';
+            } catch (error) {
+                alert('注册失败：' + error.message);
+            }
+        });
+
+        // 退出登录
+        logoutBtn.addEventListener('click', async () => {
+            try {
+                await auth.signOut();
+            } catch (error) {
+                alert('退出失败：' + error.message);
+            }
+        });
+
+        // 监听用户状态变化
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                authButtons.style.display = 'none';
+                userInfo.style.display = 'flex';
+                userName.textContent = user.displayName || '用户';
+            } else {
+                authButtons.style.display = 'flex';
+                userInfo.style.display = 'none';
+            }
+        });
+    </script>
+
+    <!-- 天气和节气功能 -->
+    <script>
+        // Firebase 配置
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // 初始化 Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+
+        // 天气和节气功能
+        async function getWeatherData(city) {
+            try {
+                // 这里应该替换为实际的天气 API 调用
+                const weatherData = {
+                    current: {
+                        temp: 25,
+                        humidity: 65,
+                        wind: 3.5,
+                        condition: '晴'
+                    },
+                    forecast: [
+                        { date: '2025-04-11', temp: 26, condition: '多云' },
+                        { date: '2025-04-12', temp: 24, condition: '晴' },
+                        { date: '2025-04-13', temp: 23, condition: '小雨' },
+                        { date: '2025-04-14', temp: 22, condition: '阴' },
+                        { date: '2025-04-15', temp: 25, condition: '晴' }
+                    ]
+                };
+
+                // 更新当前天气
+                document.querySelector('#current-temp').textContent = `${weatherData.current.temp}°C`;
+                document.querySelector('#current-humidity').textContent = `${weatherData.current.humidity}%`;
+                document.querySelector('#current-wind').textContent = `${weatherData.current.wind} m/s`;
+                document.querySelector('#current-condition').textContent = weatherData.current.condition;
+
+                // 更新天气预报
+                const forecastContainer = document.querySelector('#weather-forecast');
+                forecastContainer.innerHTML = weatherData.forecast.map(day => `
+                    <div class="flex items-center justify-between py-2">
+                        <span class="text-gray-600">${day.date}</span>
+                        <span class="font-medium">${day.temp}°C</span>
+                        <span class="text-gray-600">${day.condition}</span>
+                    </div>
+                `).join('');
+
+                // 保存到 Firestore
+                if (auth.currentUser) {
+                    await db.collection('weatherHistory').add({
+                        userId: auth.currentUser.uid,
+                        city: city,
+                        data: weatherData,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+            } catch (error) {
+                console.error('获取天气数据失败：', error);
+                alert('获取天气数据失败，请稍后重试');
+            }
+        }
+
+        // 获取当前节气
+        function getSolarTerm() {
+            const now = new Date();
+            const month = now.getMonth() + 1;
+            const day = now.getDate();
+            
+            // 简化的节气判断逻辑
+            const solarTerms = [
+                { name: '小寒', start: '1-5' },
+                { name: '大寒', start: '1-20' },
+                { name: '立春', start: '2-4' },
+                { name: '雨水', start: '2-19' },
+                { name: '惊蛰', start: '3-5' },
+                { name: '春分', start: '3-20' },
+                { name: '清明', start: '4-5' },
+                { name: '谷雨', start: '4-20' },
+                { name: '立夏', start: '5-5' },
+                { name: '小满', start: '5-21' },
+                { name: '芒种', start: '6-5' },
+                { name: '夏至', start: '6-21' },
+                { name: '小暑', start: '7-7' },
+                { name: '大暑', start: '7-22' },
+                { name: '立秋', start: '8-7' },
+                { name: '处暑', start: '8-23' },
+                { name: '白露', start: '9-7' },
+                { name: '秋分', start: '9-23' },
+                { name: '寒露', start: '10-8' },
+                { name: '霜降', start: '10-23' },
+                { name: '立冬', start: '11-7' },
+                { name: '小雪', start: '11-22' },
+                { name: '大雪', start: '12-7' },
+                { name: '冬至', start: '12-22' }
+            ];
+
+            let currentTerm = solarTerms[0];
+            for (let i = 0; i < solarTerms.length; i++) {
+                const [termMonth, termDay] = solarTerms[i].start.split('-').map(Number);
+                if (month > termMonth || (month === termMonth && day >= termDay)) {
+                    currentTerm = solarTerms[i];
+                } else {
+                    break;
+                }
+            }
+
+            // 更新节气显示
+            document.querySelector('#current-term').textContent = currentTerm.name;
+            
+            // 更新地球公转动画
+            const earth = document.querySelector('.earth');
+            const termIndex = solarTerms.findIndex(term => term.name === currentTerm.name);
+            const angle = (termIndex / 24) * 360;
+            earth.style.transform = `rotate(${angle}deg)`;
+        }
+
+        // 页面加载时获取天气数据和节气
+        window.addEventListener('load', () => {
+            getWeatherData('北京');
+            getSolarTerm();
+        });
+
+        // 定时更新天气数据
+        setInterval(() => {
+            getWeatherData('北京');
+        }, 1800000); // 每30分钟更新一次
+
+        // 定时更新节气
+        setInterval(() => {
+            getSolarTerm();
+        }, 3600000); // 每小时更新一次
+    </script>
+
+    <!-- 种植指导功能 -->
+    <script>
+        // 种植指导功能
+        async function loadPlantGuides() {
+            try {
+                let plantsRef;
+                const currentTerm = document.querySelector('#current-term').textContent;
+                
+                if (auth.currentUser) {
+                    // 如果用户已登录，获取个性化推荐
+                    plantsRef = await db.collection('plants')
+                        .where('suitableSeason', 'array-contains', currentTerm)
+                        .orderBy('difficulty')
+                        .limit(6)
+                        .get();
+                } else {
+                    // 未登录用户获取通用推荐
+                    plantsRef = await db.collection('plants')
+                        .where('suitableSeason', 'array-contains', currentTerm)
+                        .limit(6)
+                        .get();
+                }
+
+                const plantsContainer = document.querySelector('#plants-container');
+                plantsContainer.innerHTML = '';
+
+                plantsRef.forEach(doc => {
+                    const plant = doc.data();
+                    const plantCard = `
+                        <div class="plant-card bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
+                            <img src="${plant.image || 'https://via.placeholder.com/300x200'}" alt="${plant.name}" class="w-full h-40 object-cover">
+                            <div class="p-4">
+                                <h3 class="font-bold text-lg text-gray-800 mb-2">${plant.name}</h3>
+                                <div class="flex flex-wrap gap-2 mb-3">
+                                    <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-sm">
+                                        ${plant.difficulty}
+                                    </span>
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
+                                        ${plant.growthPeriod}天成熟
+                                    </span>
+                                </div>
+                                
+                                <div class="space-y-2 text-sm text-gray-600">
+                                    <p><strong>适宜温度：</strong>${plant.temperature}°C</p>
+                                    <p><strong>光照需求：</strong>${plant.sunlight}</p>
+                                    <p><strong>浇水频率：</strong>${plant.watering}</p>
+                                </div>
+                                
+                                <button onclick="showPlantDetails('${doc.id}')" class="mt-4 w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors duration-300">
+                                    查看详情
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    plantsContainer.insertAdjacentHTML('beforeend', plantCard);
+                });
+            } catch (error) {
+                console.error('加载种植指导失败：', error);
+                alert('加载种植指导失败，请稍后重试');
+            }
+        }
+
+        // 显示植物详情
+        async function showPlantDetails(plantId) {
+            try {
+                const doc = await db.collection('plants').doc(plantId).get();
+                if (doc.exists) {
+                    const plant = doc.data();
+                    const detailsHtml = `
+                        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                            <div class="bg-white rounded-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+                                <div class="flex justify-between items-start mb-4">
+                                    <h2 class="text-2xl font-bold text-gray-800">${plant.name}</h2>
+                                    <button onclick="this.closest('.fixed').remove()" class="text-gray-500 hover:text-gray-700">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                                <img src="${plant.image || 'https://via.placeholder.com/600x300'}" alt="${plant.name}" class="w-full h-64 object-cover rounded-lg mb-6">
+                                <div class="space-y-6">
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-800 mb-2">基本信息</h3>
+                                        <div class="grid grid-cols-2 gap-4 text-sm">
+                                            <div>
+                                                <p class="text-gray-600">难度等级：${plant.difficulty}</p>
+                                                <p class="text-gray-600">生长周期：${plant.growthPeriod}天</p>
+                                                <p class="text-gray-600">适宜温度：${plant.temperature}°C</p>
+                                            </div>
+                                            <div>
+                                                <p class="text-gray-600">光照需求：${plant.sunlight}</p>
+                                                <p class="text-gray-600">浇水频率：${plant.watering}</p>
+                                                <p class="text-gray-600">适合场景：${plant.suitableScene.join('、')}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-800 mb-2">土壤要求</h3>
+                                        <div class="space-y-2 text-sm text-gray-600">
+                                            <p>pH值：${plant.soil.ph}</p>
+                                            <p>含水量：${plant.soil.moisture}</p>
+                                            <p>有机质：${plant.soil.organicMatter}</p>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-800 mb-2">种植步骤</h3>
+                                        <ol class="list-decimal list-inside space-y-2 text-sm text-gray-600">
+                                            ${plant.growthSteps.map(step => `<li>${step}</li>`).join('')}
+                                        </ol>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-800 mb-2">注意事项</h3>
+                                        <ul class="list-disc list-inside space-y-2 text-sm text-gray-600">
+                                            ${plant.tips.map(tip => `<li>${tip}</li>`).join('')}
+                                        </ul>
+                                    </div>
+                                </div>
+                                ${auth.currentUser ? `
+                                    <button onclick="startPlanting('${doc.id}')" class="mt-6 w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors duration-300">
+                                        开始种植
+                                    </button>
+                                ` : `
+                                    <div class="mt-6 text-center text-gray-600">
+                                        <a href="#" onclick="document.getElementById('login-modal').style.display='flex'" class="text-green-600 hover:underline">登录</a>
+                                        后即可开始种植
+                                    </div>
+                                `}
+                            </div>
+                        </div>
+                    `;
+                    document.body.insertAdjacentHTML('beforeend', detailsHtml);
+                }
+            } catch (error) {
+                console.error('加载植物详情失败：', error);
+                alert('加载植物详情失败，请稍后重试');
+            }
+        }
+
+        // 开始种植
+        async function startPlanting(plantId) {
+            if (!auth.currentUser) {
+                alert('请先登录');
+                return;
+            }
+
+            try {
+                // 创建种植记录
+                const plantingRef = await db.collection('plantings').add({
+                    userId: auth.currentUser.uid,
+                    plantId: plantId,
+                    startDate: firebase.firestore.FieldValue.serverTimestamp(),
+                    status: 'growing',
+                    growthLogs: []
+                });
+
+                // 跳转到日记页面
+                document.querySelector('[data-tab="diary"]').click();
+                alert('已开始种植！请在种植日记中记录生长过程。');
+            } catch (error) {
+                console.error('开始种植失败：', error);
+                alert('开始种植失败，请稍后重试');
+            }
+        }
+
+        // 页面加载时加载种植指导
+        window.addEventListener('load', () => {
+            loadPlantGuides();
+        });
+
+        // 当节气变化时更新种植指导
+        const currentTermElement = document.querySelector('#current-term');
+        const observer = new MutationObserver(() => {
+            loadPlantGuides();
+        });
+        observer.observe(currentTermElement, { childList: true });
+    </script>
+
+    <!-- 种植日记功能 -->
+    <script>
+        // 加载用户的种植日记
+        async function loadPlantingDiaries() {
+            if (!auth.currentUser) {
+                document.querySelector('#diary-container').innerHTML = `
+                    <div class="text-center py-8">
+                        <p class="text-gray-600">请先登录以查看您的种植日记</p>
+                        <button onclick="document.getElementById('login-modal').style.display='flex'" class="mt-4 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                            登录
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            try {
+                const plantingsRef = await db.collection('plantings')
+                    .where('userId', '==', auth.currentUser.uid)
+                    .orderBy('startDate', 'desc')
+                    .get();
+
+                const diaryContainer = document.querySelector('#diary-container');
+                diaryContainer.innerHTML = '';
+
+                for (const doc of plantingsRef.docs) {
+                    const planting = doc.data();
+                    const plantDoc = await db.collection('plants').doc(planting.plantId).get();
+                    const plant = plantDoc.data();
+
+                    const diaryCard = `
+                        <div class="diary-entry bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h3 class="font-bold text-lg text-gray-800">${plant.name}</h3>
+                                    <p class="text-sm text-gray-500">开始时间：${new Date(planting.startDate.seconds * 1000).toLocaleDateString()}</p>
+                                </div>
+                                <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">
+                                    ${planting.status === 'growing' ? '生长中' : '已完成'}
+                                </span>
+                            </div>
+                            <div class="space-y-4">
+                                ${planting.growthLogs.map(log => `
+                                    <div class="border-l-2 border-green-200 pl-4 py-2">
+                                        <div class="flex justify-between items-start">
+                                            <p class="text-gray-800">${log.content}</p>
+                                            <span class="text-sm text-gray-500">${new Date(log.date.seconds * 1000).toLocaleDateString()}</span>
+                                        </div>
+                                        ${log.image ? `
+                                            <img src="${log.image}" alt="生长记录" class="mt-2 rounded-lg w-full max-w-md">
+                                        ` : ''}
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div class="mt-4 flex justify-between items-center">
+                                <button onclick="showAddLogModal('${doc.id}')" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                                    添加记录
+                                </button>
+                                ${planting.status === 'growing' ? `
+                                    <button onclick="completePlanting('${doc.id}')" class="px-4 py-2 text-green-600 hover:text-green-700">
+                                        标记完成
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `;
+                    diaryContainer.insertAdjacentHTML('beforeend', diaryCard);
+                }
+
+                if (plantingsRef.empty) {
+                    diaryContainer.innerHTML = `
+                        <div class="text-center py-8">
+                            <p class="text-gray-600">您还没有种植记录</p>
+                            <button onclick="document.querySelector('[data-tab=\\"guide\\"]').click()" class="mt-4 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                                去选择植物
+                            </button>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('加载种植日记失败：', error);
+                alert('加载种植日记失败，请稍后重试');
+            }
+        }
+
+        // 显示添加记录模态框
+        function showAddLogModal(plantingId) {
+            const modalHtml = `
+                <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div class="bg-white rounded-xl p-6 w-full max-w-lg">
+                        <div class="flex justify-between items-start mb-4">
+                            <h2 class="text-xl font-bold text-gray-800">添加生长记录</h2>
+                            <button onclick="this.closest('.fixed').remove()" class="text-gray-500 hover:text-gray-700">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <form id="add-log-form" class="space-y-4">
+                            <input type="hidden" name="plantingId" value="${plantingId}">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">记录内容</label>
+                                <textarea name="content" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">上传图片（可选）</label>
+                                <input type="file" name="image" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100">
+                            </div>
+                            <div class="flex justify-end space-x-3">
+                                <button type="button" onclick="this.closest('.fixed').remove()" class="px-4 py-2 text-gray-600 hover:text-gray-800">取消</button>
+                                <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">保存</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+            // 添加表单提交处理
+            document.getElementById('add-log-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const form = e.target;
+                const plantingId = form.plantingId.value;
+                const content = form.content.value;
+                const imageFile = form.image.files[0];
+
+                try {
+                    let imageUrl = null;
+                    if (imageFile) {
+                        const storageRef = storage.ref(`growth-logs/${auth.currentUser.uid}/${Date.now()}-${imageFile.name}`);
+                        await storageRef.put(imageFile);
+                        imageUrl = await storageRef.getDownloadURL();
+                    }
+
+                    const logData = {
+                        content,
+                        date: firebase.firestore.FieldValue.serverTimestamp(),
+                        image: imageUrl
+                    };
+
+                    await db.collection('plantings').doc(plantingId).update({
+                        growthLogs: firebase.firestore.FieldValue.arrayUnion(logData)
+                    });
+
+                    form.closest('.fixed').remove();
+                    loadPlantingDiaries();
+                } catch (error) {
+                    console.error('添加记录失败：', error);
+                    alert('添加记录失败，请稍后重试');
+                }
+            });
+        }
+
+        // 完成种植
+        async function completePlanting(plantingId) {
+            try {
+                await db.collection('plantings').doc(plantingId).update({
+                    status: 'completed',
+                    completedDate: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                loadPlantingDiaries();
+            } catch (error) {
+                console.error('更新种植状态失败：', error);
+                alert('更新种植状态失败，请稍后重试');
+            }
+        }
+
+        // 监听用户状态变化，更新日记显示
+        auth.onAuthStateChanged(user => {
+            if (document.querySelector('#diary').classList.contains('active')) {
+                loadPlantingDiaries();
+            }
+        });
+
+        // 切换到日记标签时加载数据
+        document.querySelector('[data-tab="diary"]').addEventListener('click', () => {
+            loadPlantingDiaries();
+        });
+    </script>
+<p style="border-radius: 8px; text-align: center; font-size: 12px; color: #fff; margin-top: 16px;position: fixed; left: 8px; bottom: 8px; z-index: 10; background: rgba(0, 0, 0, 0.8); padding: 4px 8px;">Made with <img src="https://enzostvs-deepsite.hf.space/logo.svg" alt="DeepSite Logo" style="width: 16px; height: 16px; vertical-align: middle;display:inline-block;margin-right:3px;filter:brightness(0) invert(1);"><a href="https://enzostvs-deepsite.hf.space" style="color: #fff;text-decoration: underline;" target="_blank" >DeepSite</a> -  <a href="https://enzostvs-deepsite.hf.space?remix=pianpian324/togrow" style="color: #fff;text-decoration: underline;" target="_blank" >Remix</a></p></body>
 </html>
