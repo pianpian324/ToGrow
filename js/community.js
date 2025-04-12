@@ -21,7 +21,7 @@ function getUserAvatar() {
 export async function loadCommunityPosts() {
     try {
         // GET /api/getPosts (or /api/posts)
-        const response = await fetch('/api/getPosts'); // Adjust endpoint as needed
+        const response = await fetch(`${window.config.API_BASE_URL}/api/getPosts`); // Adjust endpoint as needed
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const posts = await response.json(); // Assuming API returns array of posts
 
@@ -128,7 +128,7 @@ export async function createPost() {
             }
 
             // POST /api/createPost (or /api/posts)
-            const response = await fetch('/api/createPost', {
+            const response = await fetch(`${window.config.API_BASE_URL}/api/createPost`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', /* Auth headers */ },
                 body: JSON.stringify({
@@ -169,7 +169,7 @@ export async function createPost() {
          alert("将发布无图帖子。");
          // Re-run fetch logic without image:
           try {
-            const response = await fetch('/api/createPost', {
+            const response = await fetch(`${window.config.API_BASE_URL}/api/createPost`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', /* Auth headers */ },
                 body: JSON.stringify({
@@ -201,7 +201,7 @@ export async function likePost(postId) {
     }
     try {
         // POST /api/posts/{postId}/like
-        const response = await fetch(`/api/posts/${postId}/like`, {
+        const response = await fetch(`${window.config.API_BASE_URL}/api/posts/${postId}/like`, {
              method: 'POST', // Could also be PUT or PATCH
              headers: { /* Auth headers */ }
         });
@@ -236,7 +236,7 @@ export async function addComment(postId) {
 
     try {
         // POST /api/posts/{postId}/comments
-         const response = await fetch(`/api/posts/${postId}/comments`, {
+         const response = await fetch(`${window.config.API_BASE_URL}/api/posts/${postId}/comments`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', /* Auth headers */ },
             body: JSON.stringify({
@@ -264,4 +264,24 @@ export async function addComment(postId) {
 export function showComments(postId) {
     const commentsDiv = document.querySelector(`#comments-${postId}`);
     commentsDiv.classList.toggle('hidden');
+}
+
+// 初始化社区模块
+export function initCommunity() {
+    console.log('社区模块初始化...');
+    // 首次加载帖子
+    loadCommunityPosts();
+
+    // 绑定 '发布新贴' 按钮事件 (假设按钮 ID 为 create-post-btn)
+    const createBtn = document.getElementById('create-post-btn');
+    if (createBtn) {
+        createBtn.addEventListener('click', createPost);
+    } else {
+        console.warn('未找到 ID 为 create-post-btn 的发布按钮');
+    }
+    
+    // 确保 onclick 可以访问需要的函数
+    window.likePost = likePost;
+    window.addComment = addComment;
+    window.showComments = showComments;
 }

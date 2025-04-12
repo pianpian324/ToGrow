@@ -1,9 +1,8 @@
 // planting.js - 处理种植日记相关功能
-import config from './config.js';
 import { getSolarTerm, getPlantGuidesBySolarTerm } from './weather.js';
 
 // 当前用户ID (实际应用中应从认证服务获取)
-let currentUserId = config.DEFAULT_USER.id;
+let currentUserId = window.config.DEFAULT_USER.id;
 
 // 初始化种植模块
 export function initPlanting() {
@@ -81,7 +80,7 @@ async function loadPlantGuides() {
 async function loadPlantingDiaries() {
     try {
         // 从API获取用户的种植日记
-        const url = `${config.API_BASE_URL}${config.API_ENDPOINTS.GET_DIARIES}?userId=${currentUserId}`;
+        const url = `${window.config.API_BASE_URL}${window.config.API_ENDPOINTS.GET_DIARIES}?userId=${currentUserId}`;
         const response = await fetch(url);
         
         if (!response.ok) {
@@ -174,7 +173,7 @@ async function createPlantingDiary(plantId, plantName, notes) {
         };
         
         // 发送创建日记请求
-        const response = await fetch(`${config.API_BASE_URL}${config.API_ENDPOINTS.CREATE_DIARY}`, {
+        const response = await fetch(`${window.config.API_BASE_URL}${window.config.API_ENDPOINTS.CREATE_DIARY}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -225,7 +224,7 @@ async function addPlantingLog(diaryId, content, imageFile) {
         };
         
         // 发送添加记录请求
-        const response = await fetch(`${config.API_BASE_URL}${config.API_ENDPOINTS.ADD_DIARY_LOG(diaryId)}`, {
+        const response = await fetch(`${window.config.API_BASE_URL}${window.config.API_ENDPOINTS.ADD_DIARY_LOG(diaryId)}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -263,7 +262,7 @@ async function addPlantingLog(diaryId, content, imageFile) {
 async function completePlantingDiary(diaryId) {
     try {
         // 发送完成日记请求
-        const response = await fetch(`${config.API_BASE_URL}${config.API_ENDPOINTS.COMPLETE_DIARY(diaryId)}`, {
+        const response = await fetch(`${window.config.API_BASE_URL}${window.config.API_ENDPOINTS.COMPLETE_DIARY(diaryId)}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -301,19 +300,19 @@ async function completePlantingDiary(diaryId) {
 async function uploadImage(file, type) {
     try {
         // 检查文件类型和大小
-        if (!config.SUPPORTED_IMAGE_TYPES.includes(file.type)) {
+        if (!window.config.SUPPORTED_IMAGE_TYPES.includes(file.type)) {
             throw new Error('不支持的图片类型');
         }
         
-        if (file.size > config.MAX_IMAGE_SIZE) {
-            throw new Error(`图片大小不能超过 ${config.MAX_IMAGE_SIZE / 1024 / 1024}MB`);
+        if (file.size > window.config.MAX_IMAGE_SIZE) {
+            throw new Error(`图片大小不能超过 ${window.config.MAX_IMAGE_SIZE / 1024 / 1024}MB`);
         }
         
         // 将文件转换为 Base64
         const base64Image = await fileToBase64(file);
         
         // 发送上传请求
-        const response = await fetch(`${config.API_BASE_URL}${config.API_ENDPOINTS.UPLOAD_IMAGE}`, {
+        const response = await fetch(`${window.config.API_BASE_URL}${window.config.API_ENDPOINTS.UPLOAD_IMAGE}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

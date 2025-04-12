@@ -1,18 +1,108 @@
 ---
-title: togrow
-emoji: 🐳
-colorFrom: red
-colorTo: red
+title: ToGrow - 城市种植助手
+emoji: 🌱
+colorFrom: green
+colorTo: blue
 sdk: static
 pinned: false
 tags:
   - deepsite
+  - gardening
+  - urban-farming
 ---
 
-Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
-我想做一个面向城市人群的种菜应用，提供种菜指导和社交功能。导航栏有五个界面：
-1.  种植天气预报。显示当前处于什么二十四节气中（并显示太阳和地球相对位置的信息，让用户理解当前为什么是这个节气），用户所在最近几天的温度、适度、降水、风力如何，并可以发出适当预警。还有用户所在地最近能看到什么花在开放，动物有什么适时的行为（比如某个节气有蛙鸣）
-2.  种植指导。根据用户（输入）所在的位置和时间，还有菜园和城市阳台的两个场景，调用AI模型（如DeepSeek）整合相关信息，需要向用户推荐此时适合种的菜（包括香草）。对于每一种菜，以表格式的卡片呈现，要包括以下维度：适宜的温度条件；适宜的土壤条件（包括PH、含水量、有机质含量等）；生长周期需要的农事操作，如种子的处理、育苗、生殖生长阶段、花期、果期等。
-3.  种菜日记。根据种植指导模块的卡片，用户可以在种植的不同时间点记录植物不同维度的状态，生成日记卡片。用户也能像一般便签应用一样记录种植过程。考虑到种植指导的信息可能有偏差，主要起推动用户迈出种植的第一步的作用。种植日记是用户形成个人可靠种植经验的重要渠道。
-4.  社区。用户可以像一般社交媒体一样发帖。最重要的是可以发布日记卡片与其他社区成员交流种植的经验，调整自己的种植方法。
-5.  数字孪生的农场。用户可以在一个像腾讯地图的界面上标记出自己的点位。点击进入后，可以进入一个像QQ农场的界面，根据种菜日记，实时显示用户当前的菜。
+# ToGrow - 城市种植助手
+
+ToGrow是一款面向城市人群的种植应用，为城市居民提供种植指导、天气信息和社交功能，帮助您在城市环境中轻松开始种植之旅。
+
+## 功能特点
+
+ToGrow提供以下核心功能：
+
+1. **种植天气预报**：显示当前二十四节气信息（包括太阳和地球相对位置的可视化），提供用户所在地的天气预报（温度、湿度、降水、风力等），并根据天气情况发出适当预警。
+
+2. **种植指导**：根据用户所在位置和当前时节，推荐适合种植的蔬菜和香草。每种植物以卡片形式呈现，包含适宜温度条件、土壤要求和完整的生长周期农事操作指南。
+
+3. **种植日记**：用户可以记录植物生长状态，创建个性化的种植日记，积累可靠的种植经验。
+
+4. **社区交流**：用户可以分享种植日记、经验和成果，与其他种植爱好者交流互动。
+
+5. **数字农场**：用户可以在地图上标记自己的种植点位，并通过数字孪生技术实时查看自己的植物生长状态。
+
+## 快速开始
+
+### 非开发人员使用指南
+
+如果您不是开发人员，但想要运行ToGrow应用，请按照以下步骤操作：
+
+1. **安装必要软件**：
+   - 安装 [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+   - 安装 [Node.js](https://nodejs.org/) (推荐v16或更高版本)
+
+2. **下载项目**：
+   - 从GitHub下载ToGrow项目：`git clone https://github.com/yourusername/ToGrow.git`
+   - 如果您不熟悉Git，也可以直接下载ZIP压缩包并解压
+
+3. **配置天气API**：
+   - 注册 [OpenWeatherMap](https://openweathermap.org/) 账号并获取免费API密钥
+   - 在`js`文件夹中复制`.env.example`文件并重命名为`.env`
+   - 编辑`.env`文件，将您的API密钥填入`WEATHER_API_KEY=`后面
+
+4. **启动应用**：
+   - 打开命令提示符或PowerShell
+   - 进入项目的backend目录：`cd 项目路径\ToGrow\backend`
+   - 启动数据库：`docker-compose -f docker-compose-mysql-only.yml up -d`
+   - 初始化数据库（首次运行时）：`node init-database.js --with-sample-data`
+   - 启动应用服务器：`node app.js`
+
+5. **访问应用**：
+   - 在浏览器中打开：`http://localhost:3000`
+   - 允许位置访问以获取本地天气信息
+
+### 与应用交互
+
+在浏览器中打开应用后，您可以：
+
+- 查看当前节气和天气信息
+- 浏览适合当前季节的植物推荐
+- 创建种植日记记录您的种植过程
+- 在社区中分享您的种植经验
+- 查看您的数字农场
+
+## 开发者指南
+
+如果您是开发人员想要贡献代码或自定义应用，请参考以下信息：
+
+### 技术栈
+
+- 前端：原生JavaScript、HTML、CSS
+- 后端：Node.js、Express
+- 数据库：MySQL
+- API：OpenWeatherMap（天气数据）
+
+### 项目结构
+
+- `/backend` - 后端代码和API实现
+- `/js` - 前端JavaScript模块
+- `/css` - 样式文件
+- `/components` - 前端组件
+- `/config` - 配置文件
+
+### 开发设置
+
+1. 克隆仓库：`git clone https://github.com/yourusername/ToGrow.git`
+2. 安装依赖：`cd ToGrow/backend && npm install`
+3. 配置环境变量（参考上面的非开发人员指南）
+4. 启动开发服务器：`node app.js`
+
+### API文档
+
+API端点和使用方法请参考`backend/DEPLOYMENT.md`文件。
+
+## 许可证
+
+[MIT License](LICENSE)
+
+## 贡献
+
+欢迎提交问题和贡献代码，请参考[贡献指南](CONTRIBUTING.md)。

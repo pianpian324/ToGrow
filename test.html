@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToGrow 模块化测试</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .earth {
+            transition: transform 1s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <header class="mb-8">
+            <h1 class="text-3xl font-bold text-green-600 text-center">ToGrow 模块化测试</h1>
+            <p class="text-center text-gray-600 mt-2">测试模块化JavaScript功能</p>
+        </header>
+
+        <!-- 导航栏 -->
+        <nav class="bg-white shadow-md rounded-lg mb-6">
+            <div class="flex overflow-x-auto">
+                <button class="tab-btn flex-1 py-3 px-4 text-center border-b-2 border-transparent text-gray-600 hover:text-green-600 focus:outline-none" data-tab="weather">
+                    <i class="fas fa-cloud-sun mr-2"></i>天气
+                </button>
+                <button class="tab-btn flex-1 py-3 px-4 text-center border-b-2 border-transparent text-gray-600 hover:text-green-600 focus:outline-none" data-tab="planting">
+                    <i class="fas fa-seedling mr-2"></i>种植
+                </button>
+                <button class="tab-btn flex-1 py-3 px-4 text-center border-b-2 border-transparent text-gray-600 hover:text-green-600 focus:outline-none" data-tab="community">
+                    <i class="fas fa-users mr-2"></i>社区
+                </button>
+                <button class="tab-btn flex-1 py-3 px-4 text-center border-b-2 border-transparent text-gray-600 hover:text-green-600 focus:outline-none" data-tab="profile">
+                    <i class="fas fa-user mr-2"></i>我的
+                </button>
+            </div>
+        </nav>
+
+        <!-- 天气模块 -->
+        <div id="weather" class="tab-content">
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold">当前天气</h2>
+                    <span id="user-location" class="text-gray-600 text-sm">正在获取位置...</span>
+                </div>
+                <div class="flex items-center">
+                    <img id="weather-icon" src="https://openweathermap.org/img/wn/10d@2x.png" alt="天气图标" class="w-16 h-16">
+                    <div class="ml-4">
+                        <div class="text-3xl font-bold" id="current-temp">--°C</div>
+                        <div class="text-gray-600" id="current-condition">--</div>
+                    </div>
+                    <div class="ml-auto">
+                        <div class="text-gray-600">湿度: <span id="current-humidity">--%</span></div>
+                        <div class="text-gray-600">风速: <span id="current-wind">-- m/s</span></div>
+                    </div>
+                </div>
+                <button id="get-location-btn" class="mt-4 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors duration-300">
+                    <i class="fas fa-map-marker-alt mr-2"></i>获取我的位置
+                </button>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold">节气信息</h2>
+                    <div class="flex items-center">
+                        <span class="text-green-600 font-medium mr-2" id="current-term">--</span>
+                        <span class="text-gray-500 text-sm" id="term-date">--月--日</span>
+                    </div>
+                </div>
+                <div class="relative w-full h-40 flex items-center justify-center mb-4">
+                    <div class="w-32 h-32 rounded-full border-2 border-gray-200 flex items-center justify-center relative">
+                        <div class="w-4 h-4 bg-yellow-400 rounded-full absolute" style="left: 50%; top: 50%; transform: translate(-50%, -50%)"></div>
+                        <div class="earth w-6 h-6 bg-blue-500 rounded-full absolute" style="left: 50%; top: 0; transform: translateX(-50%)"></div>
+                    </div>
+                </div>
+                <p class="text-gray-700">节气描述加载中...</p>
+                <div id="weather-forecast" class="mt-4 border-t pt-4">
+                    <h3 class="font-semibold mb-2">未来天气预报</h3>
+                    <div class="text-center py-4 text-gray-500">加载中...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 种植模块 -->
+        <div id="planting" class="tab-content">
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <h2 class="text-xl font-semibold mb-4">适合当前节气的植物</h2>
+                <div id="plant-guides" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="text-center py-4 text-gray-500">加载中...</div>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-semibold mb-4">我的种植日记</h2>
+                <div id="planting-diaries">
+                    <div class="text-center py-4 text-gray-500">加载中...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 社区模块 -->
+        <div id="community" class="tab-content">
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold">种植社区</h2>
+                    <button id="create-post-btn" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors duration-300">
+                        <i class="fas fa-plus mr-2"></i>发布
+                    </button>
+                </div>
+                <div id="community-posts">
+                    <div class="text-center py-4 text-gray-500">加载中...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 个人资料模块 -->
+        <div id="profile" class="tab-content">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div id="auth-buttons" class="flex space-x-4">
+                    <button id="login-btn" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors duration-300">
+                        <i class="fas fa-sign-in-alt mr-2"></i>登录
+                    </button>
+                    <button id="register-btn" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-300">
+                        <i class="fas fa-user-plus mr-2"></i>注册
+                    </button>
+                </div>
+                <div id="user-info" class="hidden">
+                    <div class="flex items-center mb-4">
+                        <img id="user-avatar" src="default-avatar.png" alt="用户头像" class="w-16 h-16 rounded-full object-cover">
+                        <div class="ml-4">
+                            <h3 class="text-xl font-semibold" id="user-name">用户名</h3>
+                            <p class="text-gray-600">用户ID: <span id="user-id">--</span></p>
+                        </div>
+                        <button id="logout-btn" class="ml-auto bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors duration-300">
+                            <i class="fas fa-sign-out-alt mr-2"></i>退出
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 调试控制台 -->
+    <div id="debug-console" class="fixed bottom-0 left-0 right-0 bg-gray-900 text-white p-4 h-40 overflow-auto" style="display: none; z-index: 9999;">
+        <div class="flex justify-between items-center mb-2">
+            <h3 class="text-lg font-semibold">调试控制台</h3>
+            <button id="close-debug" class="text-gray-400 hover:text-white">&times;</button>
+        </div>
+        <div id="debug-output" class="font-mono text-sm"></div>
+    </div>
+
+    <!-- 调试按钮 -->
+    <button id="toggle-debug" class="fixed bottom-4 left-4 bg-gray-800 text-white p-2 rounded-full shadow-lg" style="z-index: 50;">
+        <i class="fas fa-bug"></i>
+    </button>
+
+    <!-- JavaScript 模块 -->
+    <script src="./js/config.js"></script>
+    <script type="module">
+        import { initAuth } from './js/auth.js';
+        import { initPlanting } from './js/planting.js';
+        import { initCommunity } from './js/community.js';
+        import { initUI } from './js/ui.js';
+        import { initLocation } from './js/location.js';
+        import { initSolarTerm } from './js/solarterm.js';
+        import { initDebug } from './js/debug.js';
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('页面加载完成，初始化应用...');
+            
+            // 首先初始化调试模块
+            initDebug();
+            
+            // 然后初始化UI，确保标签切换功能正常
+            initUI();
+            
+            // 初始化节气功能
+            initSolarTerm();
+            
+            // 初始化位置和天气功能
+            initLocation();
+            
+            // 然后初始化其他模块
+            initAuth();
+            initPlanting();
+            initCommunity();
+        });
+    </script>
+</body>
+</html>

@@ -5,6 +5,8 @@ const cors = require('cors');
 const mysql = require('mysql2/promise');
 const fs = require('fs').promises;
 const path = require('path');
+require('dotenv').config(); // Load environment variables from .env file
+const axios = require('axios');
 
 // 初始化 Express 应用
 const app = express();
@@ -13,6 +15,10 @@ app.use(express.json());
 
 // 配置静态文件服务
 app.use(express.static(path.join(__dirname, '../')));
+
+// +++ OpenWeatherMap Config +++
+const WEATHER_API_KEY = process.env.OPENWEATHERMAP_API_KEY;
+const OPENWEATHERMAP_BASE_URL = 'https://api.openweathermap.org/data/2.5';
 
 // 创建 MySQL 连接池
 const pool = mysql.createPool({
@@ -52,93 +58,236 @@ const authenticateToken = (req, res, next) => {
 
 // 健康检查端点
 app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+  res.status(200).json({ status: 'ok', message: '服务器运行正常' });
 });
 
-// API 路由
+// +++ Weather API Proxy Routes +++
+
+// Proxy for getting weather by city name
+app.get('/api/proxy/weather', async (req, res) => {
+  const { city, lang = 'zh_cn', units = 'metric' } = req.query;
+
+  if (!city) {
+    return res.status(400).json({ error: '缺少城市名称 (city) 参数' });
+  }
+  if (!WEATHER_API_KEY) {
+     console.error('Weather API Key (OPENWEATHERMAP_API_KEY) not found in environment variables.');
+     return res.status(500).json({ error: '服务器配置错误：缺少天气API密钥' });
+  }
+
+  // 中文城市名映射表
+  const cityNameMap = {
+    '北京': 'Beijing',
+    '上海': 'Shanghai',
+    '广州': 'Guangzhou',
+    '深圳': 'Shenzhen',
+    '成都': 'Chengdu',
+    '武汉': 'Wuhan',
+    '杭州': 'Hangzhou',
+    '南京': 'Nanjing',
+    '西安': 'Xian',
+    '重庆': 'Chongqing'
+  };
+
+  const apiUrl = `${OPENWEATHERMAP_BASE_URL}/weather`;
+  try {
+    // 如果是中文城市名，使用映射的英文名
+    const queryCity = cityNameMap[city] || city;
+    console.log(`查询城市天气: ${city} -> ${queryCity}`);
+
+    const response = await axios.get(apiUrl, {
+      params: {
+        q: queryCity,
+        appid: WEATHER_API_KEY,
+        units: units,
+        lang: lang,
+      }
+    });
+    res.json(response.data);
+  } catch (error) {
+    console.error('OpenWeatherMap API Error (weather):', error.response ? error.response.data : error.message);
+    const statusCode = error.response ? error.response.status : 500;
+    const message = error.response ? error.response.data.message : '代理请求天气信息失败';
+    res.status(statusCode).json({ error: message });
+  }
+});
+
+// Proxy for reverse geocoding (getting city from lat/lon)
+app.get('/api/proxy/reverse-geo', async (req, res) => {
+  const { lat, lon, lang = 'zh_cn' } = req.query;
+
+  if (!lat || !lon) {
+    return res.status(400).json({ error: '缺少纬度 (lat) 或经度 (lon) 参数' });
+  }
+   if (!WEATHER_API_KEY) {
+     console.error('Weather API Key (OPENWEATHERMAP_API_KEY) not found in environment variables.');
+     return res.status(500).json({ error: '服务器配置错误：缺少天气API密钥' });
+  }
+
+  // Note: OpenWeatherMap's reverse geocoding is a separate endpoint
+  const reverseGeoApiUrl = `http://api.openweathermap.org/geo/1.0/reverse`;
+  try {
+    const response = await axios.get(reverseGeoApiUrl, {
+       params: {
+        lat: lat,
+        lon: lon,
+        limit: 1, // We usually only need the top result
+        appid: WEATHER_API_KEY,
+        // Note: lang doesn't seem to be directly supported by /geo/1.0/reverse for city names in the same way as /data/2.5/weather
+      }
+    });
+    // The actual city name is often in response.data[0].local_names[lang] or response.data[0].name
+    // We send the whole first result back for the frontend to parse
+    if (response.data && response.data.length > 0) {
+        res.json(response.data[0]);
+    } else {
+        res.status(404).json({ error: '无法从坐标反查到地点信息' });
+    }
+  } catch (error) {
+    console.error('OpenWeatherMap API Error (reverse-geo):', error.response ? error.response.data : error.message);
+    const statusCode = error.response ? error.response.status : 500;
+    const message = error.response ? error.response.data.message : '代理请求反向地理编码失败';
+    res.status(statusCode).json({ error: message });
+  }
+});
 
 // 获取节气信息
 app.get('/api/getSolarTerm', async (req, res) => {
   try {
-    // 从查询参数中获取日期，如果没有提供则使用当前日期
-    const dateStr = req.query.date || new Date().toISOString().split('T')[0];
-    const date = new Date(dateStr);
+    const solarTermsData = await fs.readFile(path.join(__dirname, 'data/solar-terms.json'), 'utf8');
+    const solarTerms = JSON.parse(solarTermsData).solarTerms;
     
-    // 这里应该有更复杂的节气计算逻辑
-    // 简化版本：根据月份和日期返回大致节气
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
+    const now = new Date();
+    const month = now.getMonth() + 1;
+    const day = now.getDate();
     
-    let solarTerm = '';
-    if (month === 2 && day >= 3 && day <= 18) solarTerm = '立春';
-    else if (month === 2 && day >= 19) solarTerm = '雨水';
-    else if (month === 3 && day <= 5) solarTerm = '雨水';
-    else if (month === 3 && day >= 6 && day <= 20) solarTerm = '惊蛰';
-    else if (month === 3 && day >= 21) solarTerm = '春分';
-    else if (month === 4 && day <= 4) solarTerm = '春分';
-    else if (month === 4 && day >= 5 && day <= 19) solarTerm = '清明';
-    else if (month === 4 && day >= 20) solarTerm = '谷雨';
-    else if (month === 5 && day <= 5) solarTerm = '谷雨';
-    else if (month === 5 && day >= 6 && day <= 20) solarTerm = '立夏';
-    else if (month === 5 && day >= 21) solarTerm = '小满';
-    else if (month === 6 && day <= 5) solarTerm = '小满';
-    else if (month === 6 && day >= 6 && day <= 20) solarTerm = '芒种';
-    else if (month === 6 && day >= 21) solarTerm = '夏至';
-    else if (month === 7 && day <= 6) solarTerm = '夏至';
-    else if (month === 7 && day >= 7 && day <= 22) solarTerm = '小暑';
-    else if (month === 7 && day >= 23) solarTerm = '大暑';
-    else if (month === 8 && day <= 7) solarTerm = '大暑';
-    else if (month === 8 && day >= 8 && day <= 22) solarTerm = '立秋';
-    else if (month === 8 && day >= 23) solarTerm = '处暑';
-    else if (month === 9 && day <= 7) solarTerm = '处暑';
-    else if (month === 9 && day >= 8 && day <= 22) solarTerm = '白露';
-    else if (month === 9 && day >= 23) solarTerm = '秋分';
-    else if (month === 10 && day <= 8) solarTerm = '秋分';
-    else if (month === 10 && day >= 9 && day <= 23) solarTerm = '寒露';
-    else if (month === 10 && day >= 24) solarTerm = '霜降';
-    else if (month === 11 && day <= 7) solarTerm = '霜降';
-    else if (month === 11 && day >= 8 && day <= 22) solarTerm = '立冬';
-    else if (month === 11 && day >= 23) solarTerm = '小雪';
-    else if (month === 12 && day <= 6) solarTerm = '小雪';
-    else if (month === 12 && day >= 7 && day <= 21) solarTerm = '大雪';
-    else if (month === 12 && day >= 22) solarTerm = '冬至';
-    else if (month === 1 && day <= 5) solarTerm = '冬至';
-    else if (month === 1 && day >= 6 && day <= 19) solarTerm = '小寒';
-    else if (month === 1 && day >= 20) solarTerm = '大寒';
+    // 简化的节气判断逻辑
+    const solarTermRanges = [
+      { name: '小寒', start: { month: 1, day: 5 }, end: { month: 1, day: 19 } },
+      { name: '大寒', start: { month: 1, day: 20 }, end: { month: 2, day: 3 } },
+      { name: '立春', start: { month: 2, day: 4 }, end: { month: 2, day: 18 } },
+      { name: '雨水', start: { month: 2, day: 19 }, end: { month: 3, day: 4 } },
+      { name: '惊蛰', start: { month: 3, day: 5 }, end: { month: 3, day: 19 } },
+      { name: '春分', start: { month: 3, day: 20 }, end: { month: 4, day: 4 } },
+      { name: '清明', start: { month: 4, day: 5 }, end: { month: 4, day: 19 } },
+      { name: '谷雨', start: { month: 4, day: 20 }, end: { month: 5, day: 4 } },
+      { name: '立夏', start: { month: 5, day: 5 }, end: { month: 5, day: 20 } },
+      { name: '小满', start: { month: 5, day: 21 }, end: { month: 6, day: 4 } },
+      { name: '芒种', start: { month: 6, day: 5 }, end: { month: 6, day: 20 } },
+      { name: '夏至', start: { month: 6, day: 21 }, end: { month: 7, day: 6 } },
+      { name: '小暑', start: { month: 7, day: 7 }, end: { month: 7, day: 21 } },
+      { name: '大暑', start: { month: 7, day: 22 }, end: { month: 8, day: 6 } },
+      { name: '立秋', start: { month: 8, day: 7 }, end: { month: 8, day: 22 } },
+      { name: '处暑', start: { month: 8, day: 23 }, end: { month: 9, day: 6 } },
+      { name: '白露', start: { month: 9, day: 7 }, end: { month: 9, day: 22 } },
+      { name: '秋分', start: { month: 9, day: 23 }, end: { month: 10, day: 7 } },
+      { name: '寒露', start: { month: 10, day: 8 }, end: { month: 10, day: 22 } },
+      { name: '霜降', start: { month: 10, day: 23 }, end: { month: 11, day: 6 } },
+      { name: '立冬', start: { month: 11, day: 7 }, end: { month: 11, day: 21 } },
+      { name: '小雪', start: { month: 11, day: 22 }, end: { month: 12, day: 6 } },
+      { name: '大雪', start: { month: 12, day: 7 }, end: { month: 12, day: 21 } },
+      { name: '冬至', start: { month: 12, day: 22 }, end: { month: 1, day: 4 } }
+    ];
     
-    res.status(200).json({
-      date: dateStr,
-      solarTerm: solarTerm,
-      nextPlanting: ['立春', '雨水', '惊蛰', '春分', '清明', '谷雨'].includes(solarTerm)
-        ? '春季种植季节'
-        : ['立夏', '小满', '芒种', '夏至', '小暑', '大暑'].includes(solarTerm)
-        ? '夏季种植季节'
-        : ['立秋', '处暑', '白露', '秋分', '寒露', '霜降'].includes(solarTerm)
-        ? '秋季种植季节'
-        : '冬季休整期'
+    let currentTermName = '';
+    let dateRange = '';
+    
+    for (const range of solarTermRanges) {
+      if (range.name === '冬至') {
+        // 特殊处理跨年的冬至
+        if ((month === 12 && day >= 22) || (month === 1 && day <= 4)) {
+          currentTermName = range.name;
+          dateRange = `12月22日-1月4日`;
+          break;
+        }
+      } else {
+        if ((month === range.start.month && day >= range.start.day) && 
+            (month === range.end.month && day <= range.end.day)) {
+          currentTermName = range.name;
+          dateRange = `${range.start.month}月${range.start.day}日-${range.end.month}月${range.end.day}日`;
+          break;
+        }
+      }
+    }
+    
+    // 查找当前节气的详细信息
+    const currentTermInfo = solarTerms.find(term => term.name === currentTermName);
+    
+    if (!currentTermInfo) {
+      return res.status(404).json({ error: '无法确定当前节气' });
+    }
+    
+    res.json({
+      name: currentTermInfo.name,
+      dateRange: dateRange,
+      description: currentTermInfo.description,
+      naturalSigns: currentTermInfo.naturalSigns,
+      farmingTips: currentTermInfo.farmingTips
     });
   } catch (error) {
     console.error('获取节气信息失败:', error);
-    res.status(500).json({ message: '获取节气信息失败' });
+    res.status(500).json({ error: '获取节气信息失败' });
   }
 });
 
 // 获取植物指南
 app.get('/api/plantGuides', async (req, res) => {
   try {
-    const [rows] = await pool.execute('SELECT * FROM plants');
+    // 读取植物数据
+    const plantsData = await fs.readFile(path.join(__dirname, 'data/plants.json'), 'utf8');
+    const plants = JSON.parse(plantsData).plants;
     
-    // 格式化数据
-    const plants = rows.map(plant => ({
-      ...plant,
-      id: plant.id.toString(),
-      suitableSeason: JSON.parse(plant.suitableSeason)
-    }));
+    // 获取查询参数
+    const { season, search, limit = 10 } = req.query;
     
-    res.status(200).json(plants);
+    let filteredPlants = plants;
+    
+    // 按节气/季节筛选
+    if (season) {
+      filteredPlants = filteredPlants.filter(plant => 
+        plant.suitableSeason.includes(season)
+      );
+    }
+    
+    // 按名称搜索
+    if (search) {
+      const searchLower = search.toLowerCase();
+      filteredPlants = filteredPlants.filter(plant => 
+        plant.name.toLowerCase().includes(searchLower) || 
+        plant.description.toLowerCase().includes(searchLower)
+      );
+    }
+    
+    // 限制返回数量
+    const limitedPlants = filteredPlants.slice(0, parseInt(limit));
+    
+    res.json(limitedPlants);
   } catch (error) {
     console.error('获取植物指南失败:', error);
-    res.status(500).json({ message: '获取植物指南失败' });
+    res.status(500).json({ error: '获取植物指南失败' });
+  }
+});
+
+// 获取植物详情
+app.get('/api/plantGuides/:id', async (req, res) => {
+  try {
+    const plantId = parseInt(req.params.id);
+    
+    // 读取植物数据
+    const plantsData = await fs.readFile(path.join(__dirname, 'data/plants.json'), 'utf8');
+    const plants = JSON.parse(plantsData).plants;
+    
+    // 查找指定ID的植物
+    const plant = plants.find(p => p.id === plantId);
+    
+    if (!plant) {
+      return res.status(404).json({ error: '未找到指定植物' });
+    }
+    
+    res.json(plant);
+  } catch (error) {
+    console.error('获取植物详情失败:', error);
+    res.status(500).json({ error: '获取植物详情失败' });
   }
 });
 
@@ -554,6 +703,17 @@ app.post('/api/posts/:postId/comments', authenticateToken, async (req, res) => {
     console.error('添加评论失败:', error);
     res.status(500).json({ message: '添加评论失败' });
   }
+});
+
+// 404 处理
+app.use((req, res, next) => {
+  res.status(404).json({ error: `找不到路由: ${req.method} ${req.path}` });
+});
+
+// 错误处理
+app.use((err, req, res, next) => {
+  console.error('服务器错误:', err);
+  res.status(500).json({ error: '服务器内部错误' });
 });
 
 // 初始化数据库并启动服务器

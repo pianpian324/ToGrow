@@ -1,5 +1,3 @@
-import config from './config.js';
-
 export function initAuth() {
     const loginModal = document.getElementById('login-modal');
     const registerModal = document.getElementById('register-modal');
@@ -11,126 +9,153 @@ export function initAuth() {
     const userName = document.getElementById('user-name');
 
     // 显示/隐藏模态框
-    loginBtn.addEventListener('click', () => {
-        loginModal.style.display = 'flex';
-    });
-
-    registerBtn.addEventListener('click', () => {
-        registerModal.style.display = 'flex';
-    });
-
-    document.querySelectorAll('.cancel-modal').forEach(button => {
-        button.addEventListener('click', () => {
-            loginModal.style.display = 'none';
-            registerModal.style.display = 'none';
+    if (loginBtn) {
+        loginBtn.addEventListener('click', () => {
+            loginModal.style.display = 'flex';
         });
-    });
+    } else {
+        console.warn('Auth module: Login button (ID: login-btn) not found.');
+    }
+
+    if (registerBtn) {
+        registerBtn.addEventListener('click', () => {
+            registerModal.style.display = 'flex';
+        });
+    } else {
+        console.warn('Auth module: Register button (ID: register-btn) not found.');
+    }
+
+    const cancelModalButtons = document.querySelectorAll('.cancel-modal');
+    if (cancelModalButtons.length > 0) {
+        cancelModalButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                loginModal.style.display = 'none';
+                registerModal.style.display = 'none';
+            });
+        });
+    } else {
+        console.warn('Auth module: Cancel modal buttons (class: cancel-modal) not found.');
+    }
 
     // 登录表单提交
-    document.getElementById('login-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const username = document.getElementById('login-email').value;
-        const password = document.getElementById('login-password').value;
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
 
-        try {
-            const response = await fetch(`${config.API_BASE_URL}/api/auth/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ username, password })
-            });
+            try {
+                const response = await fetch(`${window.config.API_BASE_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || '登录失败');
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || '登录失败');
+                }
+
+                const data = await response.json();
+                
+                // 保存认证信息到本地存储
+                localStorage.setItem('auth_token', data.token);
+                localStorage.setItem('user_id', data.userId);
+                localStorage.setItem('token_expiry', new Date().getTime() + (data.expiresIn * 1000));
+                
+                // 获取用户信息
+                await fetchUserInfo(data.userId);
+                
+                loginModal.style.display = 'none';
+                updateAuthUI(true);
+            } catch (error) {
+                alert('登录失败：' + error.message);
             }
-
-            const data = await response.json();
-            
-            // 保存认证信息到本地存储
-            localStorage.setItem('auth_token', data.token);
-            localStorage.setItem('user_id', data.userId);
-            localStorage.setItem('token_expiry', new Date().getTime() + (data.expiresIn * 1000));
-            
-            // 获取用户信息
-            await fetchUserInfo(data.userId);
-            
-            loginModal.style.display = 'none';
-            updateAuthUI(true);
-        } catch (error) {
-            alert('登录失败：' + error.message);
-        }
-    });
+        });
+    } else {
+        console.warn('Auth module: Login form (ID: login-form) not found.');
+    }
 
     // 注册表单提交
-    document.getElementById('register-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const nickname = document.getElementById('register-name').value;
-        const email = document.getElementById('register-email').value;
-        const password = document.getElementById('register-password').value;
-        const username = email; // 使用邮箱作为用户名
+    const registerForm = document.getElementById('register-form');
+    if (registerForm) {
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const nickname = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const username = email; // 使用邮箱作为用户名
 
-        try {
-            const response = await fetch(`${config.API_BASE_URL}/api/auth/register`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ 
-                    username, 
-                    password, 
-                    email, 
-                    nickname 
-                })
-            });
+            try {
+                const response = await fetch(`${window.config.API_BASE_URL}/api/auth/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        username, 
+                        password, 
+                        email, 
+                        nickname 
+                    })
+                });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || '注册失败');
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || '注册失败');
+                }
+
+                // 注册成功后自动登录
+                const loginResponse = await fetch(`${window.config.API_BASE_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                if (!loginResponse.ok) {
+                    const errorData = await loginResponse.json();
+                    throw new Error(errorData.message || '自动登录失败');
+                }
+
+                const data = await loginResponse.json();
+                
+                // 保存认证信息到本地存储
+                localStorage.setItem('auth_token', data.token);
+                localStorage.setItem('user_id', data.userId);
+                localStorage.setItem('token_expiry', new Date().getTime() + (data.expiresIn * 1000));
+                
+                // 获取用户信息
+                await fetchUserInfo(data.userId);
+                
+                registerModal.style.display = 'none';
+                updateAuthUI(true);
+            } catch (error) {
+                alert('注册失败：' + error.message);
             }
-
-            // 注册成功后自动登录
-            const loginResponse = await fetch(`${config.API_BASE_URL}/api/auth/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ username, password })
-            });
-
-            if (!loginResponse.ok) {
-                const errorData = await loginResponse.json();
-                throw new Error(errorData.message || '自动登录失败');
-            }
-
-            const data = await loginResponse.json();
-            
-            // 保存认证信息到本地存储
-            localStorage.setItem('auth_token', data.token);
-            localStorage.setItem('user_id', data.userId);
-            localStorage.setItem('token_expiry', new Date().getTime() + (data.expiresIn * 1000));
-            
-            // 获取用户信息
-            await fetchUserInfo(data.userId);
-            
-            registerModal.style.display = 'none';
-            updateAuthUI(true);
-        } catch (error) {
-            alert('注册失败：' + error.message);
-        }
-    });
+        });
+    } else {
+        console.warn('Auth module: Register form (ID: register-form) not found.');
+    }
 
     // 退出登录
-    logoutBtn.addEventListener('click', () => {
-        // 清除本地存储中的认证信息
-        localStorage.removeItem('auth_token');
-        localStorage.removeItem('user_id');
-        localStorage.removeItem('user_info');
-        localStorage.removeItem('token_expiry');
-        
-        updateAuthUI(false);
-    });
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            // 清除本地存储中的认证信息
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('user_id');
+            localStorage.removeItem('user_info');
+            localStorage.removeItem('token_expiry');
+            
+            updateAuthUI(false);
+        });
+    } else {
+        console.warn('Auth module: Logout button (ID: logout-btn) not found.');
+    }
 
     // 页面加载时检查用户是否已登录
     checkAuthStatus();
@@ -159,7 +184,7 @@ export function initAuth() {
         
         try {
             // 验证令牌
-            const response = await fetch(`${config.API_BASE_URL}/api/auth/verify`, {
+            const response = await fetch(`${window.config.API_BASE_URL}/api/auth/verify`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -199,7 +224,7 @@ export function initAuth() {
         try {
             const token = localStorage.getItem('auth_token');
             
-            const response = await fetch(`${config.API_BASE_URL}/api/auth/user/${userId}`, {
+            const response = await fetch(`${window.config.API_BASE_URL}/api/auth/user/${userId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -227,21 +252,33 @@ export function initAuth() {
     function updateAuthUI(isLoggedIn) {
         if (isLoggedIn) {
             // 用户已登录
-            authButtons.style.display = 'none';
-            userInfo.style.display = 'flex';
+            if (authButtons) {
+                authButtons.style.display = 'none';
+            }
+            if (userInfo) {
+                userInfo.style.display = 'flex';
+            }
             
             // 从本地存储获取用户信息
             const userInfoStr = localStorage.getItem('user_info');
             if (userInfoStr) {
                 const userInfoObj = JSON.parse(userInfoStr);
-                userName.textContent = userInfoObj.nickname || userInfoObj.username || '用户';
+                if (userName) {
+                    userName.textContent = userInfoObj.nickname || userInfoObj.username || '用户';
+                }
             } else {
-                userName.textContent = '用户';
+                if (userName) {
+                    userName.textContent = '用户';
+                }
             }
         } else {
             // 用户未登录
-            authButtons.style.display = 'flex';
-            userInfo.style.display = 'none';
+            if (authButtons) {
+                authButtons.style.display = 'flex';
+            }
+            if (userInfo) {
+                userInfo.style.display = 'none';
+            }
         }
     }
 }

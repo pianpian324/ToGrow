@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>城市农园 - 都市种植指南</title>
+    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/styles.css">
@@ -78,123 +79,43 @@
                     <p class="text-gray-700 mb-4">
                         小满是夏季的第二个节气，此时太阳到达黄经60°。地球在这个位置时，北半球接收的阳光逐渐增多，气温明显升高，农作物开始饱满但尚未完全成熟。"小满者，物至于此小得盈满"。
                     </p>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="bg-green-50 p-4 rounded-lg">
-                            <h3 class="font-semibold text-green-800 mb-2 flex items-center">
-                                <i class="fas fa-temperature-high mr-2"></i>
-                                自然现象提示
-                            </h3>
-                            <ul class="space-y-2">
-                                <li class="flex items-start">
-                                    <i class="fas fa-feather-alt text-green-600 mt-1 mr-2"></i>
-                                    <span>苦菜花开，靡草枯死</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <i class="fas fa-frog text-green-600 mt-1 mr-2"></i>
-                                    <span>田间蛙鸣声渐起</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <i class="fas fa-wind text-green-600 mt-1 mr-2"></i>
-                                    <span>南风频繁，湿度增大</span>
-                                </li>
-                            </ul>
-                        </div>
-                        
-                        <div class="bg-blue-50 p-4 rounded-lg">
-                            <h3 class="font-semibold text-blue-800 mb-2 flex items-center">
-                                <i class="fas fa-exclamation-triangle mr-2"></i>
-                                农事预警
-                            </h3>
-                            <ul class="space-y-2">
-                                <li class="flex items-start">
-                                    <i class="fas fa-umbrella text-blue-600 mt-1 mr-2"></i>
-                                    <span>未来3天有连续降雨，注意排水防涝</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <i class="fas fa-bug text-blue-600 mt-1 mr-2"></i>
-                                    <span>高温高湿易发白粉病，注意通风</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
                 </div>
                 
                 <div class="bg-gray-50 px-6 py-4">
                     <h3 class="font-semibold text-gray-800 mb-3 flex items-center">
-                        <i class="fas fa-cloud-sun-rain text-gray-600 mr-2"></i>
-                        北京未来5天天气预报
+                        <i class="fas fa-map-marker-alt text-red-600 mr-2"></i>
+                        您当前位置: <span id="user-location">定位中...</span>
                     </h3>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full bg-white rounded-lg overflow-hidden">
-                            <thead class="bg-gray-100">
-                                <tr>
-                                    <th class="px-4 py-2 text-left text-gray-700">日期</th>
-                                    <th class="px-4 py-2 text-left text-gray-700">天气</th>
-                                    <th class="px-4 py-2 text-left text-gray-700">温度</th>
-                                    <th class="px-4 py-2 text-left text-gray-700">湿度</th>
-                                    <th class="px-4 py-2 text-left text-gray-700">降水</th>
-                                    <th class="px-4 py-2 text-left text-gray-700">风力</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-200">
-                                <tr>
-                                    <td class="px-4 py-2">5月25日</td>
-                                    <td class="px-4 py-2 flex items-center">
-                                        <i class="fas fa-cloud-rain mr-2 text-blue-500"></i>
-                                        小雨
-                                    </td>
-                                    <td class="px-4 py-2">18-25°C</td>
-                                    <td class="px-4 py-2">85%</td>
-                                    <td class="px-4 py-2">10mm</td>
-                                    <td class="px-4 py-2">东南风3级</td>
-                                </tr>
-                                <tr>
-                                    <td class="px-4 py-2">5月26日</td>
-                                    <td class="px-4 py-2 flex items-center">
-                                        <i class="fas fa-cloud mr-2 text-gray-500"></i>
-                                        多云
-                                    </td>
-                                    <td class="px-4 py-2">20-28°C</td>
-                                    <td class="px-4 py-2">75%</td>
-                                    <td class="px-4 py-2">0mm</td>
-                                    <td class="px-4 py-2">南风2级</td>
-                                </tr>
-                                <tr>
-                                    <td class="px-4 py-2">5月27日</td>
-                                    <td class="px-4 py-2 flex items-center">
-                                        <i class="fas fa-sun mr-2 text-yellow-500"></i>
-                                        晴
-                                    </td>
-                                    <td class="px-4 py-2">22-30°C</td>
-                                    <td class="px-4 py-2">65%</td>
-                                    <td class="px-4 py-2">0mm</td>
-                                    <td class="px-4 py-2">西南风3级</td>
-                                </tr>
-                                <tr>
-                                    <td class="px-4 py-2">5月28日</td>
-                                    <td class="px-4 py-2 flex items-center">
-                                        <i class="fas fa-cloud-showers-heavy mr-2 text-blue-700"></i>
-                                        大雨
-                                    </td>
-                                    <td class="px-4 py-2">19-24°C</td>
-                                    <td class="px-4 py-2">90%</td>
-                                    <td class="px-4 py-2">25mm</td>
-                                    <td class="px-4 py-2">东风4级</td>
-                                </tr>
-                                <tr>
-                                    <td class="px-4 py-2">5月29日</td>
-                                    <td class="px-4 py-2 flex items-center">
-                                        <i class="fas fa-cloud-sun mr-2 text-orange-500"></i>
-                                        阴转晴
-                                    </td>
-                                    <td class="px-4 py-2">20-27°C</td>
-                                    <td class="px-4 py-2">70%</td>
-                                    <td class="px-4 py-2">0mm</td>
-                                    <td class="px-4 py-2">北风3级</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    
+                    <!-- 位置获取按钮 -->
+                    <div class="mt-3 mb-4">
+                        <button id="get-location-btn" class="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg transition-colors duration-300 flex items-center justify-center">
+                            <i class="fas fa-map-marker-alt mr-2"></i> 获取我的位置
+                        </button>
+                        <!-- 位置帮助信息容器 -->
+                        <div id="location-help" class="help-message mt-3" style="display: none;"></div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between mb-4 bg-white p-4 rounded-lg shadow-sm">
+                        <div>
+                            <div class="text-xl font-bold text-gray-800 mb-1">当前天气</div>
+                            <div class="flex items-center">
+                                <span id="current-condition" class="text-gray-600 mr-2">加载中...</span>
+                                <span id="current-temp" class="text-2xl font-bold">--°C</span>
+                            </div>
+                            <div class="mt-2 text-sm text-gray-600">
+                                <div>湿度: <span id="current-humidity">--%</span></div>
+                                <div>风速: <span id="current-wind">-- m/s</span></div>
+                            </div>
+                        </div>
+                        <img id="weather-icon" src="" alt="天气图标" class="w-16 h-16" style="display: none;">
+                    </div>
+                    <h3 class="font-semibold text-gray-800 mb-3 flex items-center">
+                        <i class="fas fa-cloud-sun-rain text-gray-600 mr-2"></i>
+                        未来天气预报
+                    </h3>
+                    <div id="weather-forecast" class="space-y-2 bg-white p-4 rounded-lg shadow-sm">
+                        <div class="py-2 text-center text-gray-500">加载中...</div>
                     </div>
                 </div>
             </div>
@@ -823,6 +744,20 @@
         </div>
     </footer>
 
+    <!-- 调试控制台 -->
+    <div id="debug-console" class="fixed bottom-0 left-0 right-0 bg-gray-900 text-white p-4 h-40 overflow-auto" style="display: block; z-index: 9999;">
+        <div class="flex justify-between items-center mb-2">
+            <h3 class="text-lg font-semibold">调试控制台</h3>
+            <button id="close-debug" class="text-gray-400 hover:text-white">&times;</button>
+        </div>
+        <div id="debug-output" class="font-mono text-sm"></div>
+    </div>
+
+    <!-- 调试按钮 -->
+    <button id="toggle-debug" class="fixed bottom-4 left-4 bg-gray-800 text-white p-2 rounded-full shadow-lg z-50">
+        <i class="fas fa-bug"></i>
+    </button>
+
     <!-- 登录模态框 -->
     <div id="login-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
         <div class="bg-white rounded-xl p-6 w-96">
@@ -871,392 +806,51 @@
 
     <!-- JavaScript 模块 -->
     <script type="module">
-        import { initAuth } from './js/auth.js'; // We'll adjust auth later for CIAM if needed
-        import { getWeatherData, getSolarTerm } from './js/weather.js';
-        import { loadPlantGuides, loadPlantingDiaries, startPlanting, addGrowthLog, completePlanting } from './js/planting.js';
-        import { loadCommunityPosts, createPost, likePost, addComment, showComments } from './js/community.js';
-
-        // 初始化
-        initAuth();
-        getWeatherData('北京');
-        getSolarTerm();
-        loadPlantGuides();
-        loadPlantingDiaries();
-        loadCommunityPosts();
-
-        // Tab switching functionality
-        document.querySelectorAll('.tab-btn').forEach(button => {
-            button.addEventListener('click', () => {
-                const tabId = button.getAttribute('data-tab');
-                
-                // Hide all tab contents
-                document.querySelectorAll('.tab-content').forEach(content => {
-                    content.classList.remove('active');
-                });
-                
-                // Show selected tab content
-                document.getElementById(tabId).classList.add('active');
-                
-                // Update active tab button styling
-                document.querySelectorAll('.tab-btn').forEach(btn => {
-                    btn.classList.remove('text-green-600', 'border-green-500');
-                    btn.classList.add('text-gray-600');
-                });
-                
-                button.classList.remove('text-gray-600');
-                button.classList.add('text-green-600', 'border-green-500');
-            });
-        });
+        import { initAuth } from './js/auth.js';
+        import { initPlanting } from './js/planting.js';
+        import { initCommunity } from './js/community.js';
+        import { initWeather } from './js/weather.js';
+        import { initUI } from './js/ui.js';
+        import { initLocation } from './js/location.js';
+        import { initSolarTerm } from './js/solarterm.js';
+        import { initDebug } from './js/debug.js';
         
-        // Location switching for guide tab
-        document.querySelectorAll('.location-btn').forEach(button => {
-            button.addEventListener('click', () => {
-                document.querySelectorAll('.location-btn').forEach(btn => {
-                    btn.classList.remove('bg-green-600', 'text-white');
-                    btn.classList.add('bg-green-100', 'text-green-800');
-                });
-                
-                button.classList.remove('bg-green-100', 'text-green-800');
-                button.classList.add('bg-green-600', 'text-white');
-            });
-        });
-        
-        // Farm plot interaction
-        document.querySelectorAll('.farm-plot').forEach(plot => {
-            plot.addEventListener('click', () => {
-                const plant = plot.getAttribute('data-plant');
-                alert(`您点击了 ${plant} 种植区。将跳转到 ${plant} 的详细管理页面。`);
-            });
-        });
-        
-        // Simulate location selection
-        document.getElementById('location-btn').addEventListener('click', () => {
-            const cities = ['北京市', '上海市', '广州市', '深圳市', '成都市', '杭州市'];
-            const randomCity = cities[Math.floor(Math.random() * cities.length)];
-            document.querySelector('#location-btn span').textContent = randomCity;
-            alert(`位置已更新为 ${randomCity}，天气和种植建议将相应调整。`);
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('页面加载完成，初始化应用...');
+            
+            // 首先初始化调试模块
+            initDebug();
+            
+            // 然后初始化UI，确保标签切换功能正常
+            initUI();
+            
+            // 初始化节气功能
+            initSolarTerm();
+            
+            // 初始化位置和天气功能
+            initLocation();
+            
+            // 然后初始化其他模块
+            initAuth();
+            initPlanting();
+            initCommunity();
         });
     </script>
-
-    <!-- 用户认证功能 -->
+    <script src="./js/config.js"></script>
     <script>
-        // 登录模态框
-        const loginModal = document.getElementById('login-modal');
-        const registerModal = document.getElementById('register-modal');
-        const loginBtn = document.getElementById('login-btn');
-        const registerBtn = document.getElementById('register-btn');
-        const logoutBtn = document.getElementById('logout-btn');
-        const authButtons = document.getElementById('auth-buttons');
-        const userInfo = document.getElementById('user-info');
-        const userName = document.getElementById('user-name');
-
-        // 显示/隐藏模态框
-        loginBtn.addEventListener('click', () => {
-            loginModal.style.display = 'flex';
-        });
-
-        registerBtn.addEventListener('click', () => {
-            registerModal.style.display = 'flex';
-        });
-
-        document.querySelectorAll('.cancel-modal').forEach(button => {
-            button.addEventListener('click', () => {
-                loginModal.style.display = 'none';
-                registerModal.style.display = 'none';
-            });
-        });
-
-        // 登录表单提交
-        document.getElementById('login-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-
-            try {
-                await auth.signInWithEmailAndPassword(email, password);
-                loginModal.style.display = 'none';
-            } catch (error) {
-                alert('登录失败：' + error.message);
-            }
-        });
-
-        // 注册表单提交
-        document.getElementById('register-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const name = document.getElementById('register-name').value;
-            const email = document.getElementById('register-email').value;
-            const password = document.getElementById('register-password').value;
-
-            try {
-                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                await userCredential.user.updateProfile({
-                    displayName: name
-                });
-                registerModal.style.display = 'none';
-            } catch (error) {
-                alert('注册失败：' + error.message);
-            }
-        });
-
-        // 退出登录
-        logoutBtn.addEventListener('click', async () => {
-            try {
-                await auth.signOut();
-            } catch (error) {
-                alert('退出失败：' + error.message);
-            }
-        });
-
-        // 监听用户状态变化
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                authButtons.style.display = 'none';
-                userInfo.style.display = 'flex';
-                userName.textContent = user.displayName || '用户';
-            } else {
-                authButtons.style.display = 'flex';
-                userInfo.style.display = 'none';
-            }
-        });
-    </script>
-
-    <!-- 天气和节气功能 -->
-    <script>
-        // 天气和节气功能
-        async function getWeatherData(city) {
-            try {
-                // 这里应该替换为实际的天气 API 调用
-                const weatherData = {
-                    current: {
-                        temp: 25,
-                        humidity: 65,
-                        wind: 3.5,
-                        condition: '晴'
-                    },
-                    forecast: [
-                        { date: '2025-04-11', temp: 26, condition: '多云' },
-                        { date: '2025-04-12', temp: 24, condition: '晴' },
-                        { date: '2025-04-13', temp: 23, condition: '小雨' },
-                        { date: '2025-04-14', temp: 22, condition: '阴' },
-                        { date: '2025-04-15', temp: 25, condition: '晴' }
-                    ]
-                };
-
-                // 更新当前天气
-                document.querySelector('#current-temp').textContent = `${weatherData.current.temp}°C`;
-                document.querySelector('#current-humidity').textContent = `${weatherData.current.humidity}%`;
-                document.querySelector('#current-wind').textContent = `${weatherData.current.wind} m/s`;
-                document.querySelector('#current-condition').textContent = weatherData.current.condition;
-
-                // 更新天气预报
-                const forecastContainer = document.querySelector('#weather-forecast');
-                forecastContainer.innerHTML = weatherData.forecast.map(day => `
-                    <div class="flex items-center justify-between py-2">
-                        <span class="text-gray-600">${day.date}</span>
-                        <span class="font-medium">${day.temp}°C</span>
-                        <span class="text-gray-600">${day.condition}</span>
-                    </div>
-                `).join('');
-
-                // 保存到 Firestore
-                if (auth.currentUser) {
-                    await db.collection('weatherHistory').add({
-                        userId: auth.currentUser.uid,
-                        city: city,
-                        data: weatherData,
-                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                }
-            } catch (error) {
-                console.error('获取天气数据失败：', error);
-                alert('获取天气数据失败，请稍后重试');
-            }
-        }
-
-        // 获取当前节气
-        function getSolarTerm() {
-            const now = new Date();
-            const month = now.getMonth() + 1;
-            const day = now.getDate();
-            
-            // 简化的节气判断逻辑
-            const solarTerms = [
-                { name: '小寒', start: '1-5' },
-                { name: '大寒', start: '1-20' },
-                { name: '立春', start: '2-4' },
-                { name: '雨水', start: '2-19' },
-                { name: '惊蛰', start: '3-5' },
-                { name: '春分', start: '3-20' },
-                { name: '清明', start: '4-5' },
-                { name: '谷雨', start: '4-20' },
-                { name: '立夏', start: '5-5' },
-                { name: '小满', start: '5-21' },
-                { name: '芒种', start: '6-5' },
-                { name: '夏至', start: '6-21' },
-                { name: '小暑', start: '7-7' },
-                { name: '大暑', start: '7-22' },
-                { name: '立秋', start: '8-7' },
-                { name: '处暑', start: '8-23' },
-                { name: '白露', start: '9-7' },
-                { name: '秋分', start: '9-23' },
-                { name: '寒露', start: '10-8' },
-                { name: '霜降', start: '10-23' },
-                { name: '立冬', start: '11-7' },
-                { name: '小雪', start: '11-22' },
-                { name: '大雪', start: '12-7' },
-                { name: '冬至', start: '12-22' }
-            ];
-
-            let currentTerm = solarTerms[0];
-            for (let i = 0; i < solarTerms.length; i++) {
-                const [termMonth, termDay] = solarTerms[i].start.split('-').map(Number);
-                if (month > termMonth || (month === termMonth && day >= termDay)) {
-                    currentTerm = solarTerms[i];
-                } else {
-                    break;
-                }
-            }
-
-            // 更新节气显示
-            document.querySelector('#current-term').textContent = currentTerm.name;
-            document.querySelector('#term-date').textContent = `${month}月${day}日`;
-            
-            // 更新地球公转动画
-            const earth = document.querySelector('.earth');
-            const termIndex = solarTerms.findIndex(term => term.name === currentTerm.name);
-            const angle = (termIndex / 24) * 360;
-            earth.style.transform = `rotate(${angle}deg)`;
-        }
-
-        // 页面加载时获取天气数据和节气
-        window.addEventListener('load', () => {
-            getWeatherData('北京');
-            getSolarTerm();
-            
-            // 添加导航切换功能
-            setupTabNavigation();
-        });
-
-        // 定时更新天气数据
-        setInterval(() => {
-            getWeatherData('北京');
-        }, 1800000); // 每30分钟更新一次
-
-        // 定时更新节气
-        setInterval(() => {
-            getSolarTerm();
-        }, 3600000); // 每小时更新一次
+        // 全局变量，用于存储API密钥
+        let weatherApiKey = '';
         
-        // 设置导航切换功能
-        function setupTabNavigation() {
-            const tabButtons = document.querySelectorAll('.tab-btn');
-            const tabContents = document.querySelectorAll('.tab-content');
-            
-            tabButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const tabName = button.getAttribute('data-tab');
-                    
-                    // 移除所有激活状态
-                    tabButtons.forEach(btn => {
-                        btn.classList.remove('text-green-600', 'border-green-500');
-                        btn.classList.add('text-gray-600', 'border-transparent');
-                    });
-                    
-                    tabContents.forEach(content => {
-                        content.classList.remove('active');
-                        content.style.display = 'none';
-                    });
-                    
-                    // 激活当前选中的标签
-                    button.classList.add('text-green-600', 'border-green-500');
-                    button.classList.remove('text-gray-600', 'border-transparent');
-                    
-                    const activeContent = document.getElementById(tabName);
-                    if (activeContent) {
-                        activeContent.classList.add('active');
-                        activeContent.style.display = 'block';
-                    }
-                });
-            });
-            
-            // 默认显示第一个标签内容
-            tabContents.forEach(content => {
-                content.style.display = 'none';
-            });
-            
-            const defaultTab = document.querySelector('.tab-content.active');
-            if (defaultTab) {
-                defaultTab.style.display = 'block';
+        // 尝试从URL参数中获取API密钥
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            weatherApiKey = urlParams.get('weather_api_key') || '';
+            if (weatherApiKey) {
+                console.log('从URL参数加载API密钥');
             }
+        } catch (error) {
+            console.error('加载API密钥失败:', error);
         }
     </script>
-
-    <!-- 种植指导功能 -->
-    <script>
-        // 种植指导功能
-        async function loadPlantGuides() {
-            try {
-                let plantsRef;
-                const currentTerm = document.querySelector('#current-term').textContent;
-                
-                if (auth.currentUser) {
-                    // 如果用户已登录，获取个性化推荐
-                    plantsRef = await db.collection('plants')
-                        .where('suitableSeason', 'array-contains', currentTerm)
-                        .orderBy('difficulty')
-                        .limit(6)
-                        .get();
-                } else {
-                    // 未登录用户获取通用推荐
-                    plantsRef = await db.collection('plants')
-                        .where('suitableSeason', 'array-contains', currentTerm)
-                        .limit(6)
-                        .get();
-                }
-
-                const plantsContainer = document.querySelector('#plants-container');
-                plantsContainer.innerHTML = '';
-
-                plantsRef.forEach(doc => {
-                    const plant = doc.data();
-                    const plantCard = `
-                        <div class="plant-card bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
-                            <img src="${plant.image || 'https://via.placeholder.com/300x200'}" alt="${plant.name}" class="w-full h-40 object-cover">
-                            <div class="p-4">
-                                <h3 class="font-bold text-lg text-gray-800 mb-2">${plant.name}</h3>
-                                <div class="flex flex-wrap gap-2 mb-3">
-                                    <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-sm">
-                                        ${plant.difficulty}
-                                    </span>
-                                    <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
-                                        ${plant.growthPeriod}天成熟
-                                    </span>
-                                </div>
-                                
-                                <div class="space-y-2 text-sm text-gray-600">
-                                    <p><strong>适宜温度：</strong>${plant.temperature}°C</p>
-                                    <p><strong>光照需求：</strong>${plant.sunlight}</p>
-                                    <p><strong>浇水频率：</strong>${plant.watering}</p>
-                                </div>
-                                
-                                <button onclick="showPlantDetails('${doc.id}')" class="mt-4 w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors duration-300">
-                                    <i class="fas fa-book mr-2"></i> 查看详情
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                    plantsContainer.insertAdjacentHTML('beforeend', plantCard);
-                });
-            } catch (error) {
-                console.error('加载种植指导失败：', error);
-                alert('加载种植指导失败，请稍后重试');
-            }
-        }
-
-        // 显示植物详情
-        async function showPlantDetails(plantId) {
-            try {
-                const doc = await db.collection('plants').doc(plantId).get();
-                if (doc.exists) {
-                    const plant = doc.data();
-```
+</body>
+</html>

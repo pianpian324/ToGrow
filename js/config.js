@@ -5,6 +5,24 @@
  * 部署到生产环境时，请更新 API_BASE_URL 为您的腾讯云API网关URL
  */
 
+// 尝试加载环境变量
+let weatherApiKey = 'YOUR_API_KEY';
+
+// 从URL参数中获取API密钥（仅用于开发环境）
+try {
+    const urlParams = new URLSearchParams(window.location.search);
+    const keyFromUrl = urlParams.get('weather_api_key');
+    if (keyFromUrl) {
+        weatherApiKey = keyFromUrl;
+        console.log('从URL参数加载API密钥');
+    } else {
+        // 如果部署在生产环境，可以从服务器环境变量中获取
+        console.log('未找到API密钥URL参数，使用默认值');
+    }
+} catch (error) {
+    console.error('加载API密钥失败:', error);
+}
+
 const config = {
     // API 基础URL
     // 开发环境使用本地服务器
@@ -41,11 +59,19 @@ const config = {
         avatar: 'images/default-avatar.png'
     },
     
+    // 天气API配置
+    WEATHER_API: {
+        BASE_URL: 'https://api.openweathermap.org/data/2.5',
+        DEFAULT_CITY: 'Beijing', // Default city if location fails
+        UNITS: 'metric',         // Units for temperature (metric=Celsius, imperial=Fahrenheit)
+        LANG: 'zh_cn'            // Language for weather descriptions
+    },
+    
     // 其他配置
     ITEMS_PER_PAGE: 10,
     MAX_IMAGE_SIZE: 5 * 1024 * 1024, // 5MB
     SUPPORTED_IMAGE_TYPES: ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
 };
 
-// 导出配置
-export default config;
+// 将config暴露为全局变量
+window.config = config;
