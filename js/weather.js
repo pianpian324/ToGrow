@@ -1,104 +1,84 @@
-import { auth, db } from '../config/firebase.js';
+// weather.js - 处理天气和节气相关功能
+import config from './config.js';
 
-export async function getWeatherData(city) {
+// 初始化天气和节气模块
+export function initWeather() {
+    console.log('初始化天气和节气模块...');
+    getSolarTerm()
+        .then(currentTerm => {
+            console.log(`当前节气: ${currentTerm}`);
+            // 可以在这里添加其他依赖于节气的初始化逻辑
+        })
+        .catch(error => {
+            console.error('初始化节气失败:', error);
+        });
+}
+
+// 获取当前节气
+export async function getSolarTerm() {
     try {
-        // 这里应该替换为实际的天气 API 调用
-        const weatherData = {
-            current: {
-                temp: 25,
-                humidity: 65,
-                wind: 3.5,
-                condition: '晴'
-            },
-            forecast: [
-                { date: '2025-04-11', temp: 26, condition: '多云' },
-                { date: '2025-04-12', temp: 24, condition: '晴' },
-                { date: '2025-04-13', temp: 23, condition: '小雨' },
-                { date: '2025-04-14', temp: 22, condition: '阴' },
-                { date: '2025-04-15', temp: 25, condition: '晴' }
-            ]
-        };
-
-        // 更新当前天气
-        document.querySelector('#current-temp').textContent = `${weatherData.current.temp}°C`;
-        document.querySelector('#current-humidity').textContent = `${weatherData.current.humidity}%`;
-        document.querySelector('#current-wind').textContent = `${weatherData.current.wind} m/s`;
-        document.querySelector('#current-condition').textContent = weatherData.current.condition;
-
-        // 更新天气预报
-        const forecastContainer = document.querySelector('#weather-forecast');
-        forecastContainer.innerHTML = weatherData.forecast.map(day => `
-            <div class="flex items-center justify-between py-2">
-                <span class="text-gray-600">${day.date}</span>
-                <span class="font-medium">${day.temp}°C</span>
-                <span class="text-gray-600">${day.condition}</span>
-            </div>
-        `).join('');
-
-        // 保存到 Firestore
-        if (auth.currentUser) {
-            await db.collection('weatherHistory').add({
-                userId: auth.currentUser.uid,
-                city: city,
-                data: weatherData,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            });
+        // 使用腾讯云API获取节气信息
+        const response = await fetch(`${config.API_BASE_URL}${config.API_ENDPOINTS.GET_SOLAR_TERM}`);
+        
+        if (!response.ok) {
+            throw new Error(`获取节气失败: ${response.status}`);
         }
+        
+        const data = await response.json();
+        const currentTerm = data.solarTerm; // 假设API返回 { solarTerm: '谷雨' }
+        
+        // 更新UI显示当前节气
+        displaySolarTerm(currentTerm);
+        
+        return currentTerm;
     } catch (error) {
-        console.error('获取天气数据失败：', error);
-        alert('获取天气数据失败，请稍后重试');
+        console.error('获取节气信息失败:', error);
+        // 显示默认节气或错误信息
+        displaySolarTerm('未知节气');
+        return '未知节气';
     }
 }
 
-export function getSolarTerm() {
-    const now = new Date();
-    const month = now.getMonth() + 1;
-    const day = now.getDate();
-    
-    // 简化的节气判断逻辑
-    const solarTerms = [
-        { name: '小寒', start: '1-5' },
-        { name: '大寒', start: '1-20' },
-        { name: '立春', start: '2-4' },
-        { name: '雨水', start: '2-19' },
-        { name: '惊蛰', start: '3-5' },
-        { name: '春分', start: '3-20' },
-        { name: '清明', start: '4-5' },
-        { name: '谷雨', start: '4-20' },
-        { name: '立夏', start: '5-5' },
-        { name: '小满', start: '5-21' },
-        { name: '芒种', start: '6-5' },
-        { name: '夏至', start: '6-21' },
-        { name: '小暑', start: '7-7' },
-        { name: '大暑', start: '7-22' },
-        { name: '立秋', start: '8-7' },
-        { name: '处暑', start: '8-23' },
-        { name: '白露', start: '9-7' },
-        { name: '秋分', start: '9-23' },
-        { name: '寒露', start: '10-8' },
-        { name: '霜降', start: '10-23' },
-        { name: '立冬', start: '11-7' },
-        { name: '小雪', start: '11-22' },
-        { name: '大雪', start: '12-7' },
-        { name: '冬至', start: '12-22' }
-    ];
-
-    let currentTerm = solarTerms[0];
-    for (let i = 0; i < solarTerms.length; i++) {
-        const [termMonth, termDay] = solarTerms[i].start.split('-').map(Number);
-        if (month > termMonth || (month === termMonth && day >= termDay)) {
-            currentTerm = solarTerms[i];
-        } else {
-            break;
-        }
+// 显示节气信息
+function displaySolarTerm(termName) {
+    // 更新DOM显示节气名称
+    const termElement = document.querySelector('#current-term');
+    if (termElement) {
+        termElement.textContent = termName;
     }
 
-    // 更新节气显示
-    document.querySelector('#current-term').textContent = currentTerm.name;
+    // 更新地球动画以反映当前节气
+    const solarTermsList = ['小寒', '大寒', '立春', '雨水', '惊蛰', '春分', '清明', '谷雨', 
+                           '立夏', '小满', '芒种', '夏至', '小暑', '大暑', '立秋', '处暑', 
+                           '白露', '秋分', '寒露', '霜降', '立冬', '小雪', '大雪', '冬至'];
     
-    // 更新地球公转动画
-    const earth = document.querySelector('.earth');
-    const termIndex = solarTerms.findIndex(term => term.name === currentTerm.name);
-    const angle = (termIndex / 24) * 360;
-    earth.style.transform = `rotate(${angle}deg)`;
+    const termIndex = solarTermsList.indexOf(termName);
+    if (termIndex !== -1) {
+        const earth = document.querySelector('.earth');
+        if (earth) {
+            const angle = (termIndex / 24) * 360;
+            earth.style.transform = `rotate(${angle}deg)`;
+        }
+    } else {
+        console.warn("收到未知节气:", termName);
+    }
+}
+
+// 获取基于节气的植物指南
+export async function getPlantGuidesBySolarTerm(solarTerm) {
+    try {
+        // 使用腾讯云API获取植物指南
+        const url = `${config.API_BASE_URL}${config.API_ENDPOINTS.PLANT_GUIDES}?solarTerm=${encodeURIComponent(solarTerm)}`;
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+            throw new Error(`获取植物指南失败: ${response.status}`);
+        }
+        
+        const guides = await response.json();
+        return guides;
+    } catch (error) {
+        console.error('获取植物指南失败:', error);
+        return []; // 返回空数组表示没有指南
+    }
 }

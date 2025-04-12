@@ -1,0 +1,15 @@
+services:
+  app:
+    build: .
+    container_name: togrow-app
+    restart: always
+    environment:
+      DB_TYPE: sqlite
+      SQLITE_FILE: /app/data/togrow.db
+    ports:
+      - "3000:3000"
+    volumes:
+      - sqlite-data:/app/data
+
+volumes:
+  sqlite-data:
