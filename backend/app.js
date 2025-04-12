@@ -11,6 +11,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// 配置静态文件服务
+app.use(express.static(path.join(__dirname, '../')));
+
 // 创建 MySQL 连接池
 const pool = mysql.createPool({
   host: process.env.MYSQL_HOST || 'localhost',

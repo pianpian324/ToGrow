@@ -13,7 +13,9 @@ services:
     command: --default-authentication-plugin=mysql_native_password
 
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.local
     container_name: togrow-app
     restart: always
     depends_on:

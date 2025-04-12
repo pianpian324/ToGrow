@@ -7,10 +7,10 @@
 
 const config = {
     // API 基础URL
-    // 开发环境使用本地模拟数据
+    // 开发环境使用本地服务器
     // 生产环境使用腾讯云API网关URL，格式如：
     // https://[您的API网关服务ID].gz.apigw.tencentcs.com
-    API_BASE_URL: 'https://service-xxxxxxxx-1234567890.gz.apigw.tencentcs.com',
+    API_BASE_URL: 'http://localhost:3000',
     
     // API 端点
     API_ENDPOINTS: {

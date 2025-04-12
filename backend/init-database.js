@@ -18,77 +18,77 @@ const dbConfig = {
 const createDatabaseSQL = `CREATE DATABASE IF NOT EXISTS togrow;`;
 
 // 创建表的SQL语句
-const createTablesSQL = `
-USE togrow;
-
--- 植物指南表
-CREATE TABLE IF NOT EXISTS plants (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(100) NOT NULL,
-  description TEXT,
-  difficulty INT,
-  suitableSeason JSON,
-  imageUrl VARCHAR(255)
-);
-
--- 用户种植日记表
-CREATE TABLE IF NOT EXISTS diaries (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  userId VARCHAR(100) NOT NULL,
-  plantId INT,
-  plantName VARCHAR(100) NOT NULL,
-  startDate DATETIME NOT NULL,
-  status VARCHAR(20) DEFAULT 'active',
-  completedDate DATETIME,
-  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-  updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (plantId) REFERENCES plants(id) ON DELETE SET NULL
-);
-
--- 种植日记日志表
-CREATE TABLE IF NOT EXISTS diary_logs (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  diaryId INT NOT NULL,
-  date DATETIME NOT NULL,
-  content TEXT,
-  imageUrl VARCHAR(255),
-  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (diaryId) REFERENCES diaries(id) ON DELETE CASCADE
-);
-
--- 社区帖子表
-CREATE TABLE IF NOT EXISTS posts (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  userId VARCHAR(100) NOT NULL,
-  userName VARCHAR(100) NOT NULL,
-  userAvatar VARCHAR(255),
-  content TEXT NOT NULL,
-  imageUrl VARCHAR(255),
-  likeCount INT DEFAULT 0,
-  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-
--- 帖子评论表
-CREATE TABLE IF NOT EXISTS comments (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  postId INT NOT NULL,
-  userId VARCHAR(100) NOT NULL,
-  userName VARCHAR(100) NOT NULL,
-  content TEXT NOT NULL,
-  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (postId) REFERENCES posts(id) ON DELETE CASCADE
-);
-
--- 帖子点赞表
-CREATE TABLE IF NOT EXISTS post_likes (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  postId INT NOT NULL,
-  userId VARCHAR(100) NOT NULL,
-  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE KEY (postId, userId),
-  FOREIGN KEY (postId) REFERENCES posts(id) ON DELETE CASCADE
-);
-`;
+const createTablesSQL = [
+  `USE togrow;`,
+  
+  `-- 植物指南表
+  CREATE TABLE IF NOT EXISTS plants (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    difficulty INT,
+    suitableSeason JSON,
+    imageUrl VARCHAR(255)
+  );`,
+  
+  `-- 用户种植日记表
+  CREATE TABLE IF NOT EXISTS diaries (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    userId VARCHAR(100) NOT NULL,
+    plantId INT,
+    plantName VARCHAR(100) NOT NULL,
+    startDate DATETIME NOT NULL,
+    status VARCHAR(20) DEFAULT 'active',
+    completedDate DATETIME,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (plantId) REFERENCES plants(id) ON DELETE SET NULL
+  );`,
+  
+  `-- 种植日记日志表
+  CREATE TABLE IF NOT EXISTS diary_logs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    diaryId INT NOT NULL,
+    date DATETIME NOT NULL,
+    content TEXT,
+    imageUrl VARCHAR(255),
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (diaryId) REFERENCES diaries(id) ON DELETE CASCADE
+  );`,
+  
+  `-- 社区帖子表
+  CREATE TABLE IF NOT EXISTS posts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    userId VARCHAR(100) NOT NULL,
+    userName VARCHAR(100) NOT NULL,
+    userAvatar VARCHAR(255),
+    content TEXT NOT NULL,
+    imageUrl VARCHAR(255),
+    likeCount INT DEFAULT 0,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+  );`,
+  
+  `-- 帖子评论表
+  CREATE TABLE IF NOT EXISTS comments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    postId INT NOT NULL,
+    userId VARCHAR(100) NOT NULL,
+    userName VARCHAR(100) NOT NULL,
+    content TEXT NOT NULL,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (postId) REFERENCES posts(id) ON DELETE CASCADE
+  );`,
+  
+  `-- 帖子点赞表
+  CREATE TABLE IF NOT EXISTS post_likes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    postId INT NOT NULL,
+    userId VARCHAR(100) NOT NULL,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY (postId, userId),
+    FOREIGN KEY (postId) REFERENCES posts(id) ON DELETE CASCADE
+  );`
+];
 
 // 植物表的样本数据
 const sampleDataSQL = `
@@ -125,7 +125,10 @@ async function initializeDatabase(importSampleData = true) {
     
     // 创建表
     console.log('正在创建表结构...');
-    await connection.query(createTablesSQL);
+    // 逐个执行创建表的SQL语句
+    for (const sql of createTablesSQL) {
+      await connection.query(sql);
+    }
     console.log('表结构创建成功');
     
     // 导入样本数据（可选）

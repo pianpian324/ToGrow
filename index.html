@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -66,7 +66,7 @@
                 <div class="p-6">
                     <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
                         <i class="fas fa-calendar-day text-green-600 mr-2"></i>
-                        当前节气: 小满 (5月20日-6月5日)
+                        当前节气: <span id="current-term">加载中...</span> (<span id="term-date">加载中...</span>)
                     </h2>
                     
                     <div class="earth-orbit">
@@ -1119,6 +1119,7 @@
 
             // 更新节气显示
             document.querySelector('#current-term').textContent = currentTerm.name;
+            document.querySelector('#term-date').textContent = `${month}月${day}日`;
             
             // 更新地球公转动画
             const earth = document.querySelector('.earth');
@@ -1131,6 +1132,9 @@
         window.addEventListener('load', () => {
             getWeatherData('北京');
             getSolarTerm();
+            
+            // 添加导航切换功能
+            setupTabNavigation();
         });
 
         // 定时更新天气数据
@@ -1142,6 +1146,49 @@
         setInterval(() => {
             getSolarTerm();
         }, 3600000); // 每小时更新一次
+        
+        // 设置导航切换功能
+        function setupTabNavigation() {
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabName = button.getAttribute('data-tab');
+                    
+                    // 移除所有激活状态
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('text-green-600', 'border-green-500');
+                        btn.classList.add('text-gray-600', 'border-transparent');
+                    });
+                    
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                        content.style.display = 'none';
+                    });
+                    
+                    // 激活当前选中的标签
+                    button.classList.add('text-green-600', 'border-green-500');
+                    button.classList.remove('text-gray-600', 'border-transparent');
+                    
+                    const activeContent = document.getElementById(tabName);
+                    if (activeContent) {
+                        activeContent.classList.add('active');
+                        activeContent.style.display = 'block';
+                    }
+                });
+            });
+            
+            // 默认显示第一个标签内容
+            tabContents.forEach(content => {
+                content.style.display = 'none';
+            });
+            
+            const defaultTab = document.querySelector('.tab-content.active');
+            if (defaultTab) {
+                defaultTab.style.display = 'block';
+            }
+        }
     </script>
 
     <!-- 种植指导功能 -->
@@ -1193,7 +1240,7 @@
                                 </div>
                                 
                                 <button onclick="showPlantDetails('${doc.id}')" class="mt-4 w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors duration-300">
-                                    查看详情
+                                    <i class="fas fa-book mr-2"></i> 查看详情
                                 </button>
                             </div>
                         </div>
@@ -1212,3 +1259,4 @@
                 const doc = await db.collection('plants').doc(plantId).get();
                 if (doc.exists) {
                     const plant = doc.data();
+```
