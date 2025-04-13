@@ -1,0 +1,457 @@
+{
+  "plants": [
+    {
+      "id": 1,
+      "name": "番茄",
+      "description": "番茄是一种多年生草本植物，原产于南美洲，是世界上最受欢迎的蔬菜之一。它富含维生素C、钾和抗氧化剂，特别是番茄红素。",
+      "difficulty": 2,
+      "suitableSeason": ["春分", "清明", "谷雨"],
+      "imageUrl": "https://example.com/tomato.jpg",
+      "tags": ["喜温", "需光照", "生长期长"],
+      "growingInfo": {
+        "temperature": "适宜温度: 20-30°C (夜间不低于15°C)",
+        "soil": "土壤pH: 6.0-6.8, 富含有机质",
+        "water": "保持土壤湿润但不积水",
+        "sunlight": "每天至少6小时直射阳光",
+        "spacing": "行距60-90cm，株距40-60cm"
+      },
+      "growingSteps": [
+        "选择健康的种子或幼苗",
+        "准备疏松、排水良好的土壤",
+        "定期浇水，保持土壤湿润",
+        "当植株长到15cm高时搭建支架",
+        "定期摘除侧芽以促进主干生长",
+        "果实变红时采收"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "生菜",
+      "description": "生菜是一种一年生或两年生的叶菜类蔬菜，原产于地中海地区。它生长迅速，适合新手种植，富含维生素A、K和叶酸。",
+      "difficulty": 1,
+      "suitableSeason": ["立春", "雨水", "惊蛰"],
+      "imageUrl": "https://example.com/lettuce.jpg",
+      "tags": ["喜凉", "生长快", "新手友好"],
+      "growingInfo": {
+        "temperature": "适宜温度: 15-20°C",
+        "soil": "土壤pH: 6.0-7.0, 肥沃、排水良好",
+        "water": "保持土壤湿润，避免干旱",
+        "sunlight": "喜欢部分遮阴，特别是在夏季",
+        "spacing": "行距20-30cm，株距15-20cm"
+      },
+      "growingSteps": [
+        "直接将种子撒在疏松的土壤表面",
+        "轻轻覆盖一层薄土",
+        "保持土壤湿润但不过湿",
+        "幼苗长出后适当间苗",
+        "外叶长到适当大小时可以采收"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "辣椒",
+      "description": "辣椒是一种多年生草本植物，但在温带地区通常作一年生栽培。原产于中南美洲，富含维生素C和抗氧化剂。",
+      "difficulty": 3,
+      "suitableSeason": ["小满", "芒种", "夏至"],
+      "imageUrl": "https://example.com/pepper.jpg",
+      "tags": ["喜温", "需充足阳光", "耐热"],
+      "growingInfo": {
+        "temperature": "适宜温度: 20-30°C",
+        "soil": "土壤pH: 5.5-6.8, 富含有机质",
+        "water": "保持土壤湿润，避免过湿",
+        "sunlight": "需要充足的阳光，每天至少6小时",
+        "spacing": "行距45-60cm，株距30-45cm"
+      },
+      "growingSteps": [
+        "在室内提前6-8周播种",
+        "当幼苗有4-6片真叶时移植到户外",
+        "定期浇水，保持土壤湿润",
+        "可以使用支架支撑植株",
+        "果实完全成熟变色时采收"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "胡萝卜",
+      "description": "胡萝卜是一种两年生根菜类蔬菜，原产于亚洲和欧洲。富含β-胡萝卜素、纤维和抗氧化剂，有益眼睛健康。",
+      "difficulty": 2,
+      "suitableSeason": ["立秋", "白露", "秋分"],
+      "imageUrl": "https://example.com/carrot.jpg",
+      "tags": ["根菜", "耐寒", "适应性强"],
+      "growingInfo": {
+        "temperature": "适宜温度: 15-20°C",
+        "soil": "土壤pH: 6.0-6.8, 疏松、深厚、无石块",
+        "water": "保持均匀湿润，避免干旱",
+        "sunlight": "全日照或部分遮阴",
+        "spacing": "行距30cm，株距5-8cm"
+      },
+      "growingSteps": [
+        "选择深厚、疏松、无石块的土壤",
+        "直接在户外播种",
+        "保持土壤湿润，特别是在发芽期",
+        "当幼苗长到5cm高时间苗",
+        "根部直径达到2.5cm或更大时可以采收"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "草莓",
+      "description": "草莓是一种多年生草本植物，属于蔷薇科。它不仅美味可口，还富含维生素C、锰和抗氧化剂。",
+      "difficulty": 3,
+      "suitableSeason": ["惊蛰", "春分", "清明"],
+      "imageUrl": "https://example.com/strawberry.jpg",
+      "tags": ["多年生", "果实甜美", "观赏价值高"],
+      "growingInfo": {
+        "temperature": "适宜温度: 15-25°C",
+        "soil": "土壤pH: 5.5-6.5, 富含有机质",
+        "water": "保持土壤湿润，避免叶片淋湿",
+        "sunlight": "需要充足的阳光，每天至少6小时",
+        "spacing": "行距30-45cm，株距30cm"
+      },
+      "growingSteps": [
+        "选择健康的幼苗",
+        "在疏松、排水良好的土壤中种植",
+        "定期浇水，保持土壤湿润",
+        "铺设稻草或其他覆盖物防止果实接触土壤",
+        "果实完全变红时采收"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "菠菜",
+      "description": "菠菜是一种一年生叶菜类蔬菜，原产于西亚。它富含铁、维生素A、C和K，是一种营养价值极高的蔬菜。",
+      "difficulty": 1,
+      "suitableSeason": ["立冬", "小雪", "大雪"],
+      "imageUrl": "https://example.com/spinach.jpg",
+      "tags": ["耐寒", "生长快", "营养丰富"],
+      "growingInfo": {
+        "temperature": "适宜温度: 10-20°C",
+        "soil": "土壤pH: 6.0-7.0, 肥沃、排水良好",
+        "water": "保持土壤湿润，避免干旱",
+        "sunlight": "全日照或部分遮阴",
+        "spacing": "行距30cm，株距5-10cm"
+      },
+      "growingSteps": [
+        "直接在户外播种",
+        "保持土壤湿润",
+        "当幼苗长出2-4片真叶时间苗",
+        "外叶长到适当大小时可以采收"
+      ]
+    },
+    {
+      "id": 7,
+      "name": "黄瓜",
+      "description": "黄瓜是一种一年生藤蔓植物，原产于印度。它含水量高，热量低，富含维生素K和钾。",
+      "difficulty": 2,
+      "suitableSeason": ["立夏", "小满", "芒种"],
+      "imageUrl": "https://example.com/cucumber.jpg",
+      "tags": ["藤蔓植物", "喜温", "需支架"],
+      "growingInfo": {
+        "temperature": "适宜温度: 20-30°C",
+        "soil": "土壤pH: 6.0-7.0, 肥沃、排水良好",
+        "water": "保持土壤湿润，避免叶片淋湿",
+        "sunlight": "需要充足的阳光，每天至少6小时",
+        "spacing": "行距120-150cm，株距30-60cm"
+      },
+      "growingSteps": [
+        "在室内提前2-3周播种或直接在户外播种",
+        "当幼苗有2-3片真叶时移植到户外",
+        "搭建支架支撑植株",
+        "定期浇水，保持土壤湿润",
+        "果实长到15-20cm时采收"
+      ]
+    },
+    {
+      "id": 8,
+      "name": "茄子",
+      "description": "茄子是一种多年生草本植物，但在温带地区通常作一年生栽培。原产于印度和中国，富含纤维和抗氧化剂。",
+      "difficulty": 3,
+      "suitableSeason": ["小满", "芒种", "夏至"],
+      "imageUrl": "https://example.com/eggplant.jpg",
+      "tags": ["喜温", "需充足阳光", "生长期长"],
+      "growingInfo": {
+        "temperature": "适宜温度: 20-30°C",
+        "soil": "土壤pH: 5.5-6.5, 富含有机质",
+        "water": "保持土壤湿润，避免过湿",
+        "sunlight": "需要充足的阳光，每天至少6小时",
+        "spacing": "行距60-90cm，株距45-60cm"
+      },
+      "growingSteps": [
+        "在室内提前6-8周播种",
+        "当幼苗有4-6片真叶时移植到户外",
+        "定期浇水，保持土壤湿润",
+        "可以使用支架支撑植株",
+        "果实表面有光泽时采收"
+      ]
+    },
+    {
+      "id": 9,
+      "name": "西兰花",
+      "description": "西兰花是一种十字花科蔬菜，原产于意大利。它富含维生素C、K、纤维和抗氧化剂，被誉为超级食品。",
+      "difficulty": 2,
+      "suitableSeason": ["立秋", "白露", "秋分"],
+      "imageUrl": "https://example.com/broccoli.jpg",
+      "tags": ["耐寒", "营养丰富", "适合秋季"],
+      "growingInfo": {
+        "temperature": "适宜温度: 15-20°C",
+        "soil": "土壤pH: 6.0-7.0, 肥沃、排水良好",
+        "water": "保持土壤湿润，避免干旱",
+        "sunlight": "全日照",
+        "spacing": "行距60-90cm，株距45-60cm"
+      },
+      "growingSteps": [
+        "在室内提前4-6周播种或直接在户外播种",
+        "当幼苗有4-6片真叶时移植到户外",
+        "定期浇水，保持土壤湿润",
+        "花蕾紧密且未开花时采收"
+      ]
+    },
+    {
+      "id": 10,
+      "name": "青椒",
+      "description": "青椒是一种多年生草本植物，但在温带地区通常作一年生栽培。原产于中南美洲，富含维生素C和抗氧化剂。",
+      "difficulty": 2,
+      "suitableSeason": ["小满", "芒种", "夏至"],
+      "imageUrl": "https://example.com/bell-pepper.jpg",
+      "tags": ["喜温", "需充足阳光", "多彩果实"],
+      "growingInfo": {
+        "temperature": "适宜温度: 20-30°C",
+        "soil": "土壤pH: 5.5-6.8, 富含有机质",
+        "water": "保持土壤湿润，避免过湿",
+        "sunlight": "需要充足的阳光，每天至少6小时",
+        "spacing": "行距45-60cm，株距30-45cm"
+      },
+      "growingSteps": [
+        "在室内提前6-8周播种",
+        "当幼苗有4-6片真叶时移植到户外",
+        "定期浇水，保持土壤湿润",
+        "可以使用支架支撑植株",
+        "果实完全成熟变色时采收"
+      ]
+    },
+    {
+      "id": 11,
+      "name": "萝卜",
+      "description": "萝卜是一种一年生或两年生根菜类蔬菜，原产于欧亚大陆。它富含维生素C、纤维和抗氧化剂。",
+      "difficulty": 1,
+      "suitableSeason": ["白露", "秋分", "寒露"],
+      "imageUrl": "https://example.com/radish.jpg",
+      "tags": ["根菜", "生长快", "耐寒"],
+      "growingInfo": {
+        "temperature": "适宜温度: 10-20°C",
+        "soil": "土壤pH: 6.0-7.0, 疏松、深厚",
+        "water": "保持均匀湿润，避免干旱",
+        "sunlight": "全日照或部分遮阴",
+        "spacing": "行距15-30cm，株距5-10cm"
+      },
+      "growingSteps": [
+        "选择疏松、深厚的土壤",
+        "直接在户外播种",
+        "保持土壤湿润",
+        "当幼苗长到5cm高时间苗",
+        "根部达到适当大小时可以采收"
+      ]
+    },
+    {
+      "id": 12,
+      "name": "韭菜",
+      "description": "韭菜是一种多年生草本植物，原产于亚洲。它富含维生素A、C和矿物质，具有独特的香味。",
+      "difficulty": 1,
+      "suitableSeason": ["立春", "雨水", "惊蛰", "小满", "芒种", "夏至"],
+      "imageUrl": "https://example.com/chives.jpg",
+      "tags": ["多年生", "易种植", "可多次收割"],
+      "growingInfo": {
+        "temperature": "适宜温度: 15-25°C",
+        "soil": "土壤pH: 6.0-7.0, 肥沃、排水良好",
+        "water": "保持土壤湿润，避免过湿",
+        "sunlight": "全日照或部分遮阴",
+        "spacing": "行距30cm，株距15cm"
+      },
+      "growingSteps": [
+        "选择健康的种子或分株",
+        "在疏松、肥沃的土壤中种植",
+        "定期浇水，保持土壤湿润",
+        "叶片长到15-20cm时可以采收",
+        "采收时距离地面2-3cm剪切，可多次收割"
+      ]
+    },
+    {
+      "id": 13,
+      "name": "空心菜",
+      "description": "空心菜是一种一年生或多年生水生或半水生草本植物，原产于东南亚。它富含维生素A、C和铁，生长迅速。",
+      "difficulty": 1,
+      "suitableSeason": ["小满", "芒种", "夏至", "小暑", "大暑"],
+      "imageUrl": "https://example.com/water-spinach.jpg",
+      "tags": ["喜温", "生长快", "耐湿"],
+      "growingInfo": {
+        "temperature": "适宜温度: 25-35°C",
+        "soil": "土壤pH: 6.0-7.0, 肥沃、湿润",
+        "water": "保持土壤湿润，甚至可以半水生栽培",
+        "sunlight": "全日照",
+        "spacing": "行距30-45cm，株距15-20cm"
+      },
+      "growingSteps": [
+        "选择健康的种子或扦插枝条",
+        "在肥沃、湿润的土壤中种植",
+        "保持土壤湿润或半水生环境",
+        "茎叶长到25-30cm时可以采收",
+        "采收时距离地面10cm剪切，可多次收割"
+      ]
+    },
+    {
+      "id": 14,
+      "name": "豆角",
+      "description": "豆角是一种一年生藤蔓植物，原产于中美洲。它富含蛋白质、纤维和维生素，是常见的夏季蔬菜。",
+      "difficulty": 2,
+      "suitableSeason": ["小满", "芒种", "夏至"],
+      "imageUrl": "https://example.com/green-beans.jpg",
+      "tags": ["藤蔓植物", "喜温", "需支架"],
+      "growingInfo": {
+        "temperature": "适宜温度: 20-30°C",
+        "soil": "土壤pH: 6.0-7.0, 肥沃、排水良好",
+        "water": "保持土壤湿润，避免过湿",
+        "sunlight": "全日照",
+        "spacing": "行距60-90cm，株距5-10cm"
+      },
+      "growingSteps": [
+        "直接在户外播种",
+        "搭建支架支撑植株",
+        "定期浇水，保持土壤湿润",
+        "豆荚长到适当大小且嫩滑时采收"
+      ]
+    },
+    {
+      "id": 15,
+      "name": "南瓜",
+      "description": "南瓜是一种一年生藤蔓植物，原产于北美洲。它富含维生素A、C和纤维，果实可长期存储。",
+      "difficulty": 2,
+      "suitableSeason": ["立夏", "小满", "芒种"],
+      "imageUrl": "https://example.com/pumpkin.jpg",
+      "tags": ["藤蔓植物", "需空间", "耐热"],
+      "growingInfo": {
+        "temperature": "适宜温度: 20-30°C",
+        "soil": "土壤pH: 6.0-6.8, 肥沃、排水良好",
+        "water": "保持土壤湿润，避免叶片淋湿",
+        "sunlight": "全日照",
+        "spacing": "行距180-240cm，株距90-120cm"
+      },
+      "growingSteps": [
+        "直接在户外播种或在室内提前2-3周播种",
+        "当幼苗有2-3片真叶时移植到户外",
+        "定期浇水，保持土壤湿润",
+        "果实完全成熟且外皮坚硬时采收"
+      ]
+    },
+    {
+      "id": 16,
+      "name": "芹菜",
+      "description": "芹菜是一种两年生草本植物，原产于地中海地区。它富含维生素K、叶酸和钾，具有独特的香味。",
+      "difficulty": 3,
+      "suitableSeason": ["白露", "秋分", "寒露"],
+      "imageUrl": "https://example.com/celery.jpg",
+      "tags": ["耐寒", "需水分", "生长期长"],
+      "growingInfo": {
+        "temperature": "适宜温度: 15-20°C",
+        "soil": "土壤pH: 6.0-7.0, 肥沃、湿润",
+        "water": "保持土壤湿润，避免干旱",
+        "sunlight": "全日照或部分遮阴",
+        "spacing": "行距30-45cm，株距15-30cm"
+      },
+      "growingSteps": [
+        "在室内提前10-12周播种",
+        "当幼苗有4-6片真叶时移植到户外",
+        "定期浇水，保持土壤湿润",
+        "茎长到30-35cm时可以采收"
+      ]
+    },
+    {
+      "id": 17,
+      "name": "洋葱",
+      "description": "洋葱是一种两年生根菜类蔬菜，原产于中亚。它富含维生素C、B6和钾，具有独特的辛辣味。",
+      "difficulty": 2,
+      "suitableSeason": ["立春", "雨水", "惊蛰"],
+      "imageUrl": "https://example.com/onion.jpg",
+      "tags": ["根菜", "耐寒", "长期存储"],
+      "growingInfo": {
+        "temperature": "适宜温度: 15-25°C",
+        "soil": "土壤pH: 6.0-7.0, 肥沃、排水良好",
+        "water": "保持土壤湿润，避免过湿",
+        "sunlight": "全日照",
+        "spacing": "行距30cm，株距10-15cm"
+      },
+      "growingSteps": [
+        "选择健康的种子或小洋葱",
+        "在疏松、肥沃的土壤中种植",
+        "定期浇水，保持土壤湿润",
+        "当叶子开始枯萎倒伏时采收"
+      ]
+    },
+    {
+      "id": 18,
+      "name": "大蒜",
+      "description": "大蒜是一种多年生草本植物，原产于中亚。它富含抗氧化剂和硫化物，具有独特的辛辣味和药用价值。",
+      "difficulty": 1,
+      "suitableSeason": ["立冬", "小雪", "大雪"],
+      "imageUrl": "https://example.com/garlic.jpg",
+      "tags": ["耐寒", "易种植", "药用价值"],
+      "growingInfo": {
+        "temperature": "适宜温度: 10-20°C",
+        "soil": "土壤pH: 6.0-7.0, 肥沃、排水良好",
+        "water": "保持土壤湿润，避免过湿",
+        "sunlight": "全日照",
+        "spacing": "行距30cm，株距10-15cm"
+      },
+      "growingSteps": [
+        "选择健康的大蒜瓣",
+        "在秋季或早春种植",
+        "定期浇水，保持土壤湿润",
+        "当叶子开始枯萎时采收"
+      ]
+    },
+    {
+      "id": 19,
+      "name": "花椰菜",
+      "description": "花椰菜是一种十字花科蔬菜，原产于地中海地区。它富含维生素C、K和纤维，是西兰花的近亲。",
+      "difficulty": 3,
+      "suitableSeason": ["立秋", "白露", "秋分"],
+      "imageUrl": "https://example.com/cauliflower.jpg",
+      "tags": ["耐寒", "营养丰富", "需肥沃土壤"],
+      "growingInfo": {
+        "temperature": "适宜温度: 15-20°C",
+        "soil": "土壤pH: 6.0-7.0, 肥沃、排水良好",
+        "water": "保持土壤湿润，避免干旱",
+        "sunlight": "全日照",
+        "spacing": "行距60-90cm，株距45-60cm"
+      },
+      "growingSteps": [
+        "在室内提前4-6周播种",
+        "当幼苗有4-6片真叶时移植到户外",
+        "定期浇水，保持土壤湿润",
+        "花球紧密且未开花时采收"
+      ]
+    },
+    {
+      "id": 20,
+      "name": "甜椒",
+      "description": "甜椒是一种多年生草本植物，但在温带地区通常作一年生栽培。原产于中南美洲，富含维生素C和抗氧化剂。",
+      "difficulty": 2,
+      "suitableSeason": ["小满", "芒种", "夏至"],
+      "imageUrl": "https://example.com/sweet-pepper.jpg",
+      "tags": ["喜温", "需充足阳光", "多彩果实"],
+      "growingInfo": {
+        "temperature": "适宜温度: 20-30°C",
+        "soil": "土壤pH: 5.5-6.8, 富含有机质",
+        "water": "保持土壤湿润，避免过湿",
+        "sunlight": "需要充足的阳光，每天至少6小时",
+        "spacing": "行距45-60cm，株距30-45cm"
+      },
+      "growingSteps": [
+        "在室内提前6-8周播种",
+        "当幼苗有4-6片真叶时移植到户外",
+        "定期浇水，保持土壤湿润",
+        "可以使用支架支撑植株",
+        "果实完全成熟变色时采收"
+      ]
+    }
+  ]
+}

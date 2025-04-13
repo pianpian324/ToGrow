@@ -1,0 +1,16 @@
+[
+  {
+    "name": "番茄",
+    "description": "喜温暖、阳光充足环境，适合阳台种植。",
+    "difficulty": 2,
+    "suitableSeason": ["春分", "清明", "谷雨"],
+    "imageUrl": "https://example.com/tomato.jpg"
+  },
+  {
+    "name": "生菜",
+    "description": "喜凉爽环境，生长周期短，适合新手。",
+    "difficulty": 1,
+    "suitableSeason": ["立春", "雨水", "惊蛰"],
+    "imageUrl": "https://example.com/lettuce.jpg"
+  }
+]

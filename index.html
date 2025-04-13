@@ -1,112 +1,13 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>城市农园 - 都市种植指南</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        .earth-orbit {
-            position: relative;
-            width: 300px;
-            height: 300px;
-            margin: 20px auto;
-        }
-        .sun {
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            background: radial-gradient(circle at 30% 30%, #fff, #ff0);
-            border-radius: 50%;
-            top: 120px;
-            left: 120px;
-            box-shadow: 0 0 50px #ff0;
-        }
-        .earth {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            background: radial-gradient(circle at 30% 30%, #1da1f2, #0c4a6e);
-            border-radius: 50%;
-            top: 135px;
-            left: 135px;
-            transform-origin: -100px 15px;
-            animation: orbit 20s linear infinite;
-        }
-        @keyframes orbit {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        .season-indicator {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background-color: #ff4757;
-            border-radius: 50%;
-            top: 150px;
-            left: 150px;
-        }
-        .card-hover {
-            transition: all 0.3s ease;
-        }
-        .card-hover:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
-            animation: fadeIn 0.5s;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        .plant-card {
-            transition: all 0.3s ease;
-        }
-        .plant-card:hover {
-            transform: scale(1.02);
-        }
-        .diary-entry {
-            position: relative;
-        }
-        .diary-entry::before {
-            content: '';
-            position: absolute;
-            left: 20px;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background-color: #e5e7eb;
-        }
-        .map-container {
-            height: 500px;
-            background-color: #f0f4f8;
-            position: relative;
-            overflow: hidden;
-        }
-        .farm-plot {
-            position: absolute;
-            width: 80px;
-            height: 80px;
-            background-color: #84cc16;
-            border: 2px solid #4d7c0f;
-            border-radius: 8px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .farm-plot:hover {
-            transform: scale(1.1);
-            z-index: 10;
-        }
-    </style>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body class="bg-gray-50 font-sans">
     <!-- Header -->
@@ -116,14 +17,16 @@
                 <i class="fas fa-leaf text-2xl"></i>
                 <h1 class="text-2xl font-bold">城市农园</h1>
             </div>
-            <div class="flex items-center space-x-4">
-                <button id="location-btn" class="flex items-center space-x-1 bg-green-700 hover:bg-green-800 px-3 py-1 rounded-full">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <span>北京市</span>
-                </button>
-                <button class="bg-green-700 hover:bg-green-800 px-3 py-1 rounded-full">
-                    <i class="fas fa-user"></i>
-                </button>
+            <!-- 用户认证按钮 -->
+            <div class="flex items-center space-x-4" id="auth-buttons">
+                <button id="login-btn" class="bg-white text-green-600 px-4 py-2 rounded-lg hover:bg-green-50 transition-colors duration-300">登录</button>
+                <button id="register-btn" class="bg-green-700 text-white px-4 py-2 rounded-lg hover:bg-green-800 transition-colors duration-300">注册</button>
+            </div>
+            <!-- 用户信息 -->
+            <div class="hidden items-center space-x-4" id="user-info">
+                <img id="user-avatar" src="https://via.placeholder.com/32" alt="用户头像" class="w-8 h-8 rounded-full">
+                <span id="user-name" class="text-white">用户名</span>
+                <button id="logout-btn" class="text-white hover:text-green-200">退出</button>
             </div>
         </div>
     </header>
@@ -164,7 +67,7 @@
                 <div class="p-6">
                     <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
                         <i class="fas fa-calendar-day text-green-600 mr-2"></i>
-                        当前节气: 小满 (5月20日-6月5日)
+                        当前节气: <span id="current-term">加载中...</span> (<span id="term-date">加载中...</span>)
                     </h2>
                     
                     <div class="earth-orbit">
@@ -176,123 +79,43 @@
                     <p class="text-gray-700 mb-4">
                         小满是夏季的第二个节气，此时太阳到达黄经60°。地球在这个位置时，北半球接收的阳光逐渐增多，气温明显升高，农作物开始饱满但尚未完全成熟。"小满者，物至于此小得盈满"。
                     </p>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="bg-green-50 p-4 rounded-lg">
-                            <h3 class="font-semibold text-green-800 mb-2 flex items-center">
-                                <i class="fas fa-temperature-high mr-2"></i>
-                                自然现象提示
-                            </h3>
-                            <ul class="space-y-2">
-                                <li class="flex items-start">
-                                    <i class="fas fa-feather-alt text-green-600 mt-1 mr-2"></i>
-                                    <span>苦菜花开，靡草枯死</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <i class="fas fa-frog text-green-600 mt-1 mr-2"></i>
-                                    <span>田间蛙鸣声渐起</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <i class="fas fa-wind text-green-600 mt-1 mr-2"></i>
-                                    <span>南风频繁，湿度增大</span>
-                                </li>
-                            </ul>
-                        </div>
-                        
-                        <div class="bg-blue-50 p-4 rounded-lg">
-                            <h3 class="font-semibold text-blue-800 mb-2 flex items-center">
-                                <i class="fas fa-exclamation-triangle mr-2"></i>
-                                农事预警
-                            </h3>
-                            <ul class="space-y-2">
-                                <li class="flex items-start">
-                                    <i class="fas fa-umbrella text-blue-600 mt-1 mr-2"></i>
-                                    <span>未来3天有连续降雨，注意排水防涝</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <i class="fas fa-bug text-blue-600 mt-1 mr-2"></i>
-                                    <span>高温高湿易发白粉病，注意通风</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
                 </div>
                 
                 <div class="bg-gray-50 px-6 py-4">
                     <h3 class="font-semibold text-gray-800 mb-3 flex items-center">
-                        <i class="fas fa-cloud-sun-rain text-gray-600 mr-2"></i>
-                        北京未来5天天气预报
+                        <i class="fas fa-map-marker-alt text-red-600 mr-2"></i>
+                        您当前位置: <span id="user-location">定位中...</span>
                     </h3>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full bg-white rounded-lg overflow-hidden">
-                            <thead class="bg-gray-100">
-                                <tr>
-                                    <th class="px-4 py-2 text-left text-gray-700">日期</th>
-                                    <th class="px-4 py-2 text-left text-gray-700">天气</th>
-                                    <th class="px-4 py-2 text-left text-gray-700">温度</th>
-                                    <th class="px-4 py-2 text-left text-gray-700">湿度</th>
-                                    <th class="px-4 py-2 text-left text-gray-700">降水</th>
-                                    <th class="px-4 py-2 text-left text-gray-700">风力</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-200">
-                                <tr>
-                                    <td class="px-4 py-2">5月25日</td>
-                                    <td class="px-4 py-2 flex items-center">
-                                        <i class="fas fa-cloud-rain mr-2 text-blue-500"></i>
-                                        小雨
-                                    </td>
-                                    <td class="px-4 py-2">18-25°C</td>
-                                    <td class="px-4 py-2">85%</td>
-                                    <td class="px-4 py-2">10mm</td>
-                                    <td class="px-4 py-2">东南风3级</td>
-                                </tr>
-                                <tr>
-                                    <td class="px-4 py-2">5月26日</td>
-                                    <td class="px-4 py-2 flex items-center">
-                                        <i class="fas fa-cloud mr-2 text-gray-500"></i>
-                                        多云
-                                    </td>
-                                    <td class="px-4 py-2">20-28°C</td>
-                                    <td class="px-4 py-2">75%</td>
-                                    <td class="px-4 py-2">0mm</td>
-                                    <td class="px-4 py-2">南风2级</td>
-                                </tr>
-                                <tr>
-                                    <td class="px-4 py-2">5月27日</td>
-                                    <td class="px-4 py-2 flex items-center">
-                                        <i class="fas fa-sun mr-2 text-yellow-500"></i>
-                                        晴
-                                    </td>
-                                    <td class="px-4 py-2">22-30°C</td>
-                                    <td class="px-4 py-2">65%</td>
-                                    <td class="px-4 py-2">0mm</td>
-                                    <td class="px-4 py-2">西南风3级</td>
-                                </tr>
-                                <tr>
-                                    <td class="px-4 py-2">5月28日</td>
-                                    <td class="px-4 py-2 flex items-center">
-                                        <i class="fas fa-cloud-showers-heavy mr-2 text-blue-700"></i>
-                                        大雨
-                                    </td>
-                                    <td class="px-4 py-2">19-24°C</td>
-                                    <td class="px-4 py-2">90%</td>
-                                    <td class="px-4 py-2">25mm</td>
-                                    <td class="px-4 py-2">东风4级</td>
-                                </tr>
-                                <tr>
-                                    <td class="px-4 py-2">5月29日</td>
-                                    <td class="px-4 py-2 flex items-center">
-                                        <i class="fas fa-cloud-sun mr-2 text-orange-500"></i>
-                                        阴转晴
-                                    </td>
-                                    <td class="px-4 py-2">20-27°C</td>
-                                    <td class="px-4 py-2">70%</td>
-                                    <td class="px-4 py-2">0mm</td>
-                                    <td class="px-4 py-2">北风3级</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    
+                    <!-- 位置获取按钮 -->
+                    <div class="mt-3 mb-4">
+                        <button id="get-location-btn" class="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg transition-colors duration-300 flex items-center justify-center">
+                            <i class="fas fa-map-marker-alt mr-2"></i> 获取我的位置
+                        </button>
+                        <!-- 位置帮助信息容器 -->
+                        <div id="location-help" class="help-message mt-3" style="display: none;"></div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between mb-4 bg-white p-4 rounded-lg shadow-sm">
+                        <div>
+                            <div class="text-xl font-bold text-gray-800 mb-1">当前天气</div>
+                            <div class="flex items-center">
+                                <span id="current-condition" class="text-gray-600 mr-2">加载中...</span>
+                                <span id="current-temp" class="text-2xl font-bold">--°C</span>
+                            </div>
+                            <div class="mt-2 text-sm text-gray-600">
+                                <div>湿度: <span id="current-humidity">--%</span></div>
+                                <div>风速: <span id="current-wind">-- m/s</span></div>
+                            </div>
+                        </div>
+                        <img id="weather-icon" src="" alt="天气图标" class="w-16 h-16" style="display: none;">
+                    </div>
+                    <h3 class="font-semibold text-gray-800 mb-3 flex items-center">
+                        <i class="fas fa-cloud-sun-rain text-gray-600 mr-2"></i>
+                        未来天气预报
+                    </h3>
+                    <div id="weather-forecast" class="space-y-2 bg-white p-4 rounded-lg shadow-sm">
+                        <div class="py-2 text-center text-gray-500">加载中...</div>
                     </div>
                 </div>
             </div>
@@ -567,107 +390,7 @@
                         </div>
                     </div>
                     
-                    <div class="space-y-6">
-                        <!-- Diary Entry 1 -->
-                        <div class="diary-entry bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                            <div class="flex justify-between items-start mb-4">
-                                <div>
-                                    <h3 class="font-bold text-lg text-gray-800">阳台番茄成长记录</h3>
-                                    <p class="text-sm text-gray-500">2023年5月15日 - 进行中</p>
-                                </div>
-                                <span class="px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full">健康</span>
-                            </div>
-                            
-                            <div class="flex flex-wrap gap-4 mb-4">
-                                <div class="flex items-center">
-                                    <i class="fas fa-thermometer-half text-gray-500 mr-2"></i>
-                                    <span>25°C</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <i class="fas fa-tint text-gray-500 mr-2"></i>
-                                    <span>土壤湿度: 适中</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <i class="fas fa-ruler-combined text-gray-500 mr-2"></i>
-                                    <span>高度: 35cm</span>
-                                </div>
-                            </div>
-                            
-                            <div class="mb-4">
-                                <p class="text-gray-700">今天发现第一朵花开了！非常开心。按照指南进行了疏花，保留了最健壮的花序。施用了少量番茄专用肥，期待结果。</p>
-                            </div>
-                            
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-                                <img src="https://via.placeholder.com/150" alt="番茄照片" class="w-full h-24 object-cover rounded-lg">
-                                <img src="https://via.placeholder.com/150" alt="番茄照片" class="w-full h-24 object-cover rounded-lg">
-                                <img src="https://via.placeholder.com/150" alt="番茄照片" class="w-full h-24 object-cover rounded-lg">
-                                <img src="https://via.placeholder.com/150" alt="番茄照片" class="w-full h-24 object-cover rounded-lg">
-                            </div>
-                            
-                            <div class="flex justify-between items-center">
-                                <div class="flex space-x-2">
-                                    <button class="text-gray-500 hover:text-green-600">
-                                        <i class="far fa-edit"></i>
-                                    </button>
-                                    <button class="text-gray-500 hover:text-red-600">
-                                        <i class="far fa-trash-alt"></i>
-                                    </button>
-                                </div>
-                                <button class="text-sm text-green-600 hover:text-green-800 font-medium">
-                                    查看完整记录 <i class="fas fa-chevron-right ml-1"></i>
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <!-- Diary Entry 2 -->
-                        <div class="diary-entry bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                            <div class="flex justify-between items-start mb-4">
-                                <div>
-                                    <h3 class="font-bold text-lg text-gray-800">罗勒水培实验</h3>
-                                    <p class="text-sm text-gray-500">2023年4月20日 - 已完成</p>
-                                </div>
-                                <span class="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">成功</span>
-                            </div>
-                            
-                            <div class="flex flex-wrap gap-4 mb-4">
-                                <div class="flex items-center">
-                                    <i class="fas fa-thermometer-half text-gray-500 mr-2"></i>
-                                    <span>22°C</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <i class="fas fa-flask text-gray-500 mr-2"></i>
-                                    <span>水培营养液</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <i class="fas fa-ruler-combined text-gray-500 mr-2"></i>
-                                    <span>高度: 25cm</span>
-                                </div>
-                            </div>
-                            
-                            <div class="mb-4">
-                                <p class="text-gray-700">经过45天的水培，罗勒生长状况良好，叶片肥大芳香浓郁。今天进行了第一次采收，剪取了顶端嫩叶用于制作青酱。水培相比土培生长速度更快，但香气略淡。</p>
-                            </div>
-                            
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-                                <img src="https://via.placeholder.com/150" alt="罗勒照片" class="w-full h-24 object-cover rounded-lg">
-                                <img src="https://via.placeholder.com/150" alt="罗勒照片" class="w-full h-24 object-cover rounded-lg">
-                            </div>
-                            
-                            <div class="flex justify-between items-center">
-                                <div class="flex space-x-2">
-                                    <button class="text-gray-500 hover:text-green-600">
-                                        <i class="far fa-edit"></i>
-                                    </button>
-                                    <button class="text-gray-500 hover:text-red-600">
-                                        <i class="far fa-trash-alt"></i>
-                                    </button>
-                                </div>
-                                <button class="text-sm text-green-600 hover:text-green-800 font-medium">
-                                    查看完整记录 <i class="fas fa-chevron-right ml-1"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                    <div id="diary-container" class="space-y-6"></div>
                 </div>
             </div>
         </div>
@@ -1016,64 +739,118 @@
                 </div>
             </div>
             <div class="border-t border-gray-700 mt-8 pt-6 text-sm text-gray-400 text-center">
-                <p>© 2023 城市农园. 保留所有权利.</p>
+                <p> 2023 城市农园. 保留所有权利.</p>
             </div>
         </div>
     </footer>
 
-    <script>
-        // Tab switching functionality
-        document.querySelectorAll('.tab-btn').forEach(button => {
-            button.addEventListener('click', () => {
-                const tabId = button.getAttribute('data-tab');
-                
-                // Hide all tab contents
-                document.querySelectorAll('.tab-content').forEach(content => {
-                    content.classList.remove('active');
-                });
-                
-                // Show selected tab content
-                document.getElementById(tabId).classList.add('active');
-                
-                // Update active tab button styling
-                document.querySelectorAll('.tab-btn').forEach(btn => {
-                    btn.classList.remove('text-green-600', 'border-green-500');
-                    btn.classList.add('text-gray-600');
-                });
-                
-                button.classList.remove('text-gray-600');
-                button.classList.add('text-green-600', 'border-green-500');
-            });
-        });
+    <!-- 调试控制台 -->
+    <div id="debug-console" class="fixed bottom-0 left-0 right-0 bg-gray-900 text-white p-4 h-40 overflow-auto" style="display: block; z-index: 9999;">
+        <div class="flex justify-between items-center mb-2">
+            <h3 class="text-lg font-semibold">调试控制台</h3>
+            <button id="close-debug" class="text-gray-400 hover:text-white">&times;</button>
+        </div>
+        <div id="debug-output" class="font-mono text-sm"></div>
+    </div>
+
+    <!-- 调试按钮 -->
+    <button id="toggle-debug" class="fixed bottom-4 left-4 bg-gray-800 text-white p-2 rounded-full shadow-lg z-50">
+        <i class="fas fa-bug"></i>
+    </button>
+
+    <!-- 登录模态框 -->
+    <div id="login-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
+        <div class="bg-white rounded-xl p-6 w-96">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">登录</h2>
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">邮箱</label>
+                    <input type="email" id="login-email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">密码</label>
+                    <input type="password" id="login-password" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" class="cancel-modal px-4 py-2 text-gray-600 hover:text-gray-800">取消</button>
+                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">登录</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 注册模态框 -->
+    <div id="register-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
+        <div class="bg-white rounded-xl p-6 w-96">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">注册</h2>
+            <form id="register-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">用户名</label>
+                    <input type="text" id="register-name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">邮箱</label>
+                    <input type="email" id="register-email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">密码</label>
+                    <input type="password" id="register-password" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" class="cancel-modal px-4 py-2 text-gray-600 hover:text-gray-800">取消</button>
+                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">注册</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript 模块 -->
+    <script type="module">
+        import { initAuth } from './js/auth.js';
+        import { initPlanting } from './js/planting.js';
+        import { initCommunity } from './js/community.js';
+        import { initWeather } from './js/weather.js';
+        import { initUI } from './js/ui.js';
+        import { initLocation } from './js/location.js';
+        import { initSolarTerm } from './js/solarterm.js';
+        import { initDebug } from './js/debug.js';
         
-        // Location switching for guide tab
-        document.querySelectorAll('.location-btn').forEach(button => {
-            button.addEventListener('click', () => {
-                document.querySelectorAll('.location-btn').forEach(btn => {
-                    btn.classList.remove('bg-green-600', 'text-white');
-                    btn.classList.add('bg-green-100', 'text-green-800');
-                });
-                
-                button.classList.remove('bg-green-100', 'text-green-800');
-                button.classList.add('bg-green-600', 'text-white');
-            });
-        });
-        
-        // Farm plot interaction
-        document.querySelectorAll('.farm-plot').forEach(plot => {
-            plot.addEventListener('click', () => {
-                const plant = plot.getAttribute('data-plant');
-                alert(`您点击了 ${plant} 种植区。将跳转到 ${plant} 的详细管理页面。`);
-            });
-        });
-        
-        // Simulate location selection
-        document.getElementById('location-btn').addEventListener('click', () => {
-            const cities = ['北京市', '上海市', '广州市', '深圳市', '成都市', '杭州市'];
-            const randomCity = cities[Math.floor(Math.random() * cities.length)];
-            document.querySelector('#location-btn span').textContent = randomCity;
-            alert(`位置已更新为 ${randomCity}，天气和种植建议将相应调整。`);
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('页面加载完成，初始化应用...');
+            
+            // 首先初始化调试模块
+            initDebug();
+            
+            // 然后初始化UI，确保标签切换功能正常
+            initUI();
+            
+            // 初始化节气功能
+            initSolarTerm();
+            
+            // 初始化位置和天气功能
+            initLocation();
+            
+            // 然后初始化其他模块
+            initAuth();
+            initPlanting();
+            initCommunity();
         });
     </script>
-<p style="border-radius: 8px; text-align: center; font-size: 12px; color: #fff; margin-top: 16px;position: fixed; left: 8px; bottom: 8px; z-index: 10; background: rgba(0, 0, 0, 0.8); padding: 4px 8px;">Made with <img src="https://enzostvs-deepsite.hf.space/logo.svg" alt="DeepSite Logo" style="width: 16px; height: 16px; vertical-align: middle;display:inline-block;margin-right:3px;filter:brightness(0) invert(1);"><a href="https://enzostvs-deepsite.hf.space" style="color: #fff;text-decoration: underline;" target="_blank" >DeepSite</a> - 🧬 <a href="https://enzostvs-deepsite.hf.space?remix=pianpian324/togrow" style="color: #fff;text-decoration: underline;" target="_blank" >Remix</a></p></body>
+    <script src="./js/config.js"></script>
+    <script>
+        // 全局变量，用于存储API密钥
+        let weatherApiKey = '';
+        
+        // 尝试从URL参数中获取API密钥
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            weatherApiKey = urlParams.get('weather_api_key') || '';
+            if (weatherApiKey) {
+                console.log('从URL参数加载API密钥');
+            }
+        } catch (error) {
+            console.error('加载API密钥失败:', error);
+        }
+    </script>
+</body>
 </html>
