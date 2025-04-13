@@ -1,19 +1,8 @@
----
-title: ToGrow - 城市种植助手
-emoji: 🌱
-colorFrom: green
-colorTo: blue
-sdk: static
-pinned: false
-tags:
-  - deepsite
-  - gardening
-  - urban-farming
----
 
-# ToGrow - 城市种植助手
 
-ToGrow是一款面向城市人群的种植应用，为城市居民提供种植指导、天气信息和社交功能，帮助您在城市环境中轻松开始种植之旅。
+# ToGrow 
+
+ToGrow是一款面向城市人群的种植应用，为城市居民提供种植指导、天气信息和社交功能，帮助您在城市环境中轻松开始种植之旅--重要的是迈出第一步。
 
 ## 功能特点
 

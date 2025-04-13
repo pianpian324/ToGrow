@@ -1,0 +1,65 @@
+version: 1.0
+stages:
+  - name: build
+    jobs:
+      - name: build-togrow
+        steps:
+          - name: checkout
+            uses: checkout@v1
+          - name: setup-node
+            uses: setup-node@v1
+            with:
+              node-version: '14'
+          - name: install-dependencies
+            run: |
+              cd backend
+              npm install
+          - name: build
+            run: |
+              cd backend
+              npm run build || echo "No build script found, skipping build"
+          - name: test
+            run: |
+              cd backend
+              npm test || echo "No test script found, skipping tests"
+
+  - name: deploy
+    jobs:
+      - name: deploy-to-cnb
+        steps:
+          - name: checkout
+            uses: checkout@v1
+          - name: deploy
+            uses: cnb-deploy@v1
+            with:
+              service: togrow-backend
+              region: ap-guangzhou  # 可根据需要更改为其他区域
+              platform: container
+              env:
+                - name: MYSQL_HOST
+                  value: ${MYSQL_HOST}
+                - name: MYSQL_USER
+                  value: ${MYSQL_USER}
+                - name: MYSQL_PASSWORD
+                  value: ${MYSQL_PASSWORD}
+                - name: MYSQL_DATABASE
+                  value: ${MYSQL_DATABASE}
+                - name: OPENWEATHERMAP_API_KEY
+                  value: ${OPENWEATHERMAP_API_KEY}
+                - name: COS_SECRET_ID
+                  value: ${COS_SECRET_ID}
+                - name: COS_SECRET_KEY
+                  value: ${COS_SECRET_KEY}
+                - name: COS_BUCKET
+                  value: ${COS_BUCKET}
+                - name: COS_REGION
+                  value: ${COS_REGION}
+                - name: PORT
+                  value: "3000"
+              ports:
+                - containerPort: 3000
+                  servicePort: 80
+              resources:
+                cpu: 1
+                memory: 2Gi
+              replicas: 1

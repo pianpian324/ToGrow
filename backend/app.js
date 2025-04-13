@@ -8,28 +8,67 @@ const path = require('path');
 require('dotenv').config(); // Load environment variables from .env file
 const axios = require('axios');
 
+// 尝试加载 COS SDK（如果已安装）
+let COS;
+try {
+  COS = require('cos-nodejs-sdk-v5');
+} catch (error) {
+  console.log('COS SDK 未安装，图片上传功能将不可用');
+}
+
 // 初始化 Express 应用
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' })); // 增加请求体大小限制，用于文件上传
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // 配置静态文件服务
 app.use(express.static(path.join(__dirname, '../')));
 
-// +++ OpenWeatherMap Config +++
-const WEATHER_API_KEY = process.env.OPENWEATHERMAP_API_KEY;
-const OPENWEATHERMAP_BASE_URL = 'https://api.openweathermap.org/data/2.5';
+// +++ 环境变量配置 +++
+const config = {
+  // 数据库配置
+  db: {
+    host: process.env.MYSQL_HOST || 'localhost',
+    user: process.env.MYSQL_USER || 'root',
+    password: process.env.MYSQL_PASSWORD || 'password',
+    database: process.env.MYSQL_DATABASE || 'togrow',
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+  },
+  // 天气 API 配置
+  weather: {
+    apiKey: process.env.OPENWEATHERMAP_API_KEY,
+    baseUrl: 'https://api.openweathermap.org/data/2.5'
+  },
+  // COS 配置
+  cos: {
+    secretId: process.env.COS_SECRET_ID,
+    secretKey: process.env.COS_SECRET_KEY,
+    bucket: process.env.COS_BUCKET,
+    region: process.env.COS_REGION
+  },
+  // 服务器配置
+  server: {
+    port: process.env.PORT || 3000
+  }
+};
 
 // 创建 MySQL 连接池
-const pool = mysql.createPool({
-  host: process.env.MYSQL_HOST || 'localhost',
-  user: process.env.MYSQL_USER || 'root',
-  password: process.env.MYSQL_PASSWORD || 'password',
-  database: process.env.MYSQL_DATABASE || 'togrow',
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
-});
+const pool = mysql.createPool(config.db);
+
+// 初始化 COS 客户端（如果配置了）
+let cosClient;
+if (COS && config.cos.secretId && config.cos.secretKey) {
+  cosClient = new COS({
+    SecretId: config.cos.secretId,
+    SecretKey: config.cos.secretKey
+  });
+  console.log('COS 客户端初始化成功');
+} else {
+  console.log('COS 客户端未初始化，图片上传功能将不可用');
+}
 
 // 导入数据库初始化函数
 const initializeDatabase = require('./init-database');
@@ -58,7 +97,12 @@ const authenticateToken = (req, res, next) => {
 
 // 健康检查端点
 app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'ok', message: '服务器运行正常' });
+  res.status(200).json({ 
+    status: 'ok', 
+    message: '服务器运行正常',
+    version: '1.0.0',
+    timestamp: new Date().toISOString()
+  });
 });
 
 // +++ Weather API Proxy Routes +++
@@ -70,7 +114,7 @@ app.get('/api/proxy/weather', async (req, res) => {
   if (!city) {
     return res.status(400).json({ error: '缺少城市名称 (city) 参数' });
   }
-  if (!WEATHER_API_KEY) {
+  if (!config.weather.apiKey) {
      console.error('Weather API Key (OPENWEATHERMAP_API_KEY) not found in environment variables.');
      return res.status(500).json({ error: '服务器配置错误：缺少天气API密钥' });
   }
@@ -89,7 +133,7 @@ app.get('/api/proxy/weather', async (req, res) => {
     '重庆': 'Chongqing'
   };
 
-  const apiUrl = `${OPENWEATHERMAP_BASE_URL}/weather`;
+  const apiUrl = `${config.weather.baseUrl}/weather`;
   try {
     // 如果是中文城市名，使用映射的英文名
     const queryCity = cityNameMap[city] || city;
@@ -98,7 +142,7 @@ app.get('/api/proxy/weather', async (req, res) => {
     const response = await axios.get(apiUrl, {
       params: {
         q: queryCity,
-        appid: WEATHER_API_KEY,
+        appid: config.weather.apiKey,
         units: units,
         lang: lang,
       }
@@ -119,7 +163,7 @@ app.get('/api/proxy/reverse-geo', async (req, res) => {
   if (!lat || !lon) {
     return res.status(400).json({ error: '缺少纬度 (lat) 或经度 (lon) 参数' });
   }
-   if (!WEATHER_API_KEY) {
+   if (!config.weather.apiKey) {
      console.error('Weather API Key (OPENWEATHERMAP_API_KEY) not found in environment variables.');
      return res.status(500).json({ error: '服务器配置错误：缺少天气API密钥' });
   }
@@ -132,7 +176,7 @@ app.get('/api/proxy/reverse-geo', async (req, res) => {
         lat: lat,
         lon: lon,
         limit: 1, // We usually only need the top result
-        appid: WEATHER_API_KEY,
+        appid: config.weather.apiKey,
         // Note: lang doesn't seem to be directly supported by /geo/1.0/reverse for city names in the same way as /data/2.5/weather
       }
     });
@@ -729,7 +773,7 @@ async function startServer() {
     }
     
     // 启动服务器
-    const PORT = process.env.PORT || 3000;
+    const PORT = config.server.port;
     app.listen(PORT, () => {
       console.log(`服务器已启动，监听端口 ${PORT}`);
       console.log(`可以通过 http://localhost:${PORT}/health 访问健康检查端点`);
